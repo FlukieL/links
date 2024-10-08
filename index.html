@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
         <style>
                 /* Add this CSS for the grow and spin effect */
@@ -13,6 +12,30 @@
                  /* Increase size of footer icons */
                  .footer i {
                     font-size: 1.2em; /* Adjust size as needed */
+                }
+                .link-container {
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%; /* Ensure it takes the full width */
+                }
+                .link-container .link {
+                        flex: 1; /* Make each link take equal space */
+                        margin-right: 10px; /* Add some space between the links */
+                }
+                .link-container .link:last-child {
+                        margin-right: 0; /* Remove margin for the last link */
+                }
+                .spin-grow {
+                        animation: spinGrow 5s forwards;
+                }
+
+                @keyframes spinGrow {
+                        0% {
+                        transform: scale(1) rotate(0deg);
+                        }
+                        100% {
+                        transform: scale(30) rotate(3600deg);
+                        }
                 }
             </style>
 <head>
@@ -37,8 +60,12 @@
     <div id="links">
             <a class="link" href="https://lukeharper.co.uk" target="_blank" style="border-radius: 25px;"><i
                 class="fas fa-globe" aria-hidden="true"></i> CV/Skills</a>
-                <a class="link" href="https://twitch.tv/Flukie" target="_blank" style="border-radius: 25px;"><i
-                        class="fab fa-twitch"></i> Twitch</a>
+                <div class="link-container">
+                        <a class="link" href="https://twitch.tv/Flukie" target="_blank" style="border-radius: 25px;"><i
+                                class="fab fa-twitch"></i> Twitch</a>
+                        <a class="link" href="https://kick.com/Flukie" target="_blank" style="border-radius: 25px;"><i
+                                class="fab fa-kick" aria-hidden="true"></i> Kick</a>
+                    </div>
                         <a class="link" href="https://snake.lukeharper.co.uk" target="_blank" style="border-radius: 25px;"><i class="fas fa-gamepad"></i> Snake Game</a>		<a class="link" href="https://vk.com/videos512257790" target="_blank" style="border-radius: 25px;"><i
                 class="fab fa-vk" aria-hidden="true"></i> DJ/Livestream Archive</a>	
         <a class="link" href="https://www.instagram.com/flukiel" target="_blank" style="border-radius: 25px;"><i
@@ -47,10 +74,14 @@
                 class="fab fa-twitter" aria-hidden="true"></i> 𝕏</a>
 		<!-- <a class="link" href="https://onlyfans.lukeharper.co.uk" target="_blank" style="border-radius: 25px;"><i
                 class="fa fa-camera-retro" aria-hidden="true"></i> OnlyFans - Free Preview Video</a> -->
-		<a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" style="border-radius: 25px;"><i
-                class="fab fa-youtube" aria-hidden="true"></i> YouTube</a>				
-		<a class="link" href="https://www.youtube.com/channel/UCATUa97yYMQXw1fKxqHP9yw" target="_blank" style="border-radius: 25px;"><i
-                class="fas fa-gamepad" aria-hidden="true"></i> YouTube - Livestreams</a>	
+                <div class="link-container">
+                        <a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" style="border-radius: 25px;">
+                            <i class="fab fa-youtube" aria-hidden="true"></i> YouTube
+                        </a>
+                        <a class="link" href="https://www.youtube.com/@flukie4876/streams" target="_blank" style="border-radius: 25px;">
+                            <i class="fas fa-gamepad" aria-hidden="true"></i> YouTube - Livestreams
+                        </a>
+                    </div>	
 		<a class="link" href="https://www.tiktok.com/@flukiel" target="_blank" style="border-radius: 25px;"><i
                 class="fab fa-tiktok" aria-hidden="true"></i> TikTok</a>	
                 <a class="link" href="https://www.snapchat.com/add/flukiel" target="_blank" style="border-radius: 25px;"><i
@@ -76,6 +107,19 @@
     <!-- Javascript -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src="index.js"></script>
+    <script>let clickCount = 0;
+        const userPhoto = document.getElementById('userPhoto');
+        
+        userPhoto.onclick = function() {
+            clickCount++;
+            if (clickCount === 10) {
+                userPhoto.classList.add('spin-grow');
+                setTimeout(() => {
+                    window.location.href = "https://onlyfans.lukeharper.co.uk";
+                }, 5000); // Redirect after 5 seconds
+                clickCount = 0; // Reset click count
+            }
+        };</script>
 </body>
 
 </html>
