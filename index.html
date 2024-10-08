@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 
 <html>
-
+        <style>
+                /* Add this CSS for the grow and spin effect */
+                #userPhoto {
+                    transition: transform 0.5s ease;
+                }
+            
+                #userPhoto:hover, #userPhoto:focus {
+                    transform: scale(2.0) rotate(360deg);
+                }
+            </style>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
@@ -15,7 +24,9 @@
 <body>
     <i onclick="mostrar(this)" class="fas fa-moon fa-2x night_mode"></i>
 
-    <img id="userPhoto" src="assets/imagens/profile.jpg" alt="User Photo">
+    <img id="userPhoto" src="assets/imagens/profile.jpg" alt="User Photo" 
+    onmouseover="this.classList.add('hover')" 
+    onmouseout="this.classList.remove('hover')">
 
     <spam id="userName">Luke Harper</spam>
 
