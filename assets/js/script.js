@@ -47,3 +47,18 @@ function mostrar(e) {
     }
 
 }
+
+const userName = document.getElementById('userName');
+let mouseOverTimeout;
+
+userName.addEventListener('mouseover', function() {
+    userName.textContent = 'Alive?';
+    mouseOverTimeout = setTimeout(() => {
+        window.location.href = "https://alive.lukeharper.co.uk";
+    }, 5000); // Redirect after 5 seconds
+});
+
+userName.addEventListener('mouseout', function() {
+    userName.textContent = 'Luke Harper';
+    clearTimeout(mouseOverTimeout); // Clear the timeout if mouse leaves
+});
