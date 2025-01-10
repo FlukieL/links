@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function mostrar(e) {
+    const userPhoto = document.getElementById('userPhoto');
+    let currentGreyscale = parseFloat(userPhoto.style.filter.match(/grayscale\((\d+)%\)/)?.[1] || 0);
+
     if (e.classList.contains("fa-moon")) { // if it has moon icon
         e.classList.remove("fa-moon"); // remove moon icon class
         e.classList.add("fa-sun"); // add sun icon class
@@ -52,4 +55,8 @@ function mostrar(e) {
             circulos[i].style.filter = 'grayscale(0%)';
         }
     }
+
+    // Increment greyscale by 5% each toggle, max 100%
+    currentGreyscale = Math.min(currentGreyscale + 5, 100);
+    userPhoto.style.filter = `grayscale(${currentGreyscale}%)`;
 }
