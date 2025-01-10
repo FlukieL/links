@@ -1,3 +1,22 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const userName = document.getElementById('userName');
+    let mouseOverTimeout;
+
+    if (userName) {
+        userName.addEventListener('mouseover', function() {
+            userName.textContent = 'Alive?';
+            mouseOverTimeout = setTimeout(() => {
+                window.location.href = "https://alive.lukeharper.co.uk";
+            }, 5000); // Redirect after 5 seconds
+        });
+
+        userName.addEventListener('mouseout', function() {
+            userName.textContent = 'Luke Harper';
+            clearTimeout(mouseOverTimeout); // Clear the timeout if mouse leaves
+        });
+    }
+});
+
 function mostrar(e) {
     if (e.classList.contains("fa-moon-o")) { // if it has moon icon
         e.classList.remove("fa-moon-o"); // remove moon icon class
@@ -47,18 +66,3 @@ function mostrar(e) {
     }
 
 }
-
-const userName = document.getElementById('userName');
-let mouseOverTimeout;
-
-userName.addEventListener('mouseover', function() {
-    userName.textContent = 'Alive?';
-    mouseOverTimeout = setTimeout(() => {
-        window.location.href = "https://alive.lukeharper.co.uk";
-    }, 5000); // Redirect after 5 seconds
-});
-
-userName.addEventListener('mouseout', function() {
-    userName.textContent = 'Luke Harper';
-    clearTimeout(mouseOverTimeout); // Clear the timeout if mouse leaves
-});
