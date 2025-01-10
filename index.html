@@ -134,16 +134,23 @@
                     top: 20px;
                     left: 50%;
                     transform: translateX(-50%) translateY(-100%);
-                    background: rgba(0,0,0,0.8);
+                    background: rgba(0, 140, 255, 0.25);
                     color: white;
-                    padding: 15px 30px;
-                    border-radius: 5px;
-                    transition: transform 0.3s ease;
+                    padding: 20px 30px;
+                    border-radius: 15px;
+                    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
                     z-index: 1000;
                     pointer-events: none;
-                    opacity: 0;  /* Start hidden */
+                    opacity: 0;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(0, 140, 255, 0.3);
+                    box-shadow: 0 4px 15px rgba(0, 140, 255, 0.2);
                     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
                     font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    min-width: 300px;
                 }
 
                 #achievementPopup.show {
@@ -151,20 +158,36 @@
                     opacity: 1;
                 }
 
-                /* Add this to your existing mostrar function in script.js */
-                body.dark-mode .achievement {
-                    background: rgba(0, 140, 255, 0.15);
-                    color: #fff;
-                    border: 1px solid rgba(0, 140, 255, 0.3);
+                #achievementPopup i {
+                    font-size: 24px;
+                    color: rgb(0, 170, 255);
+                    animation: achievementIcon 1s ease infinite;
                 }
 
-                body.dark-mode .achievement.unlocked {
-                    background: rgba(0, 140, 255, 0.25);
-                    box-shadow: 0 2px 5px rgba(0, 140, 255, 0.3);
+                #achievementText {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
                 }
 
-                body.dark-mode .achievement i {
-                    color: rgb(0, 170, 255);  /* Lighter blue for dark mode */
+                #achievementText::before {
+                    content: "Achievement Unlocked!";
+                    font-size: 0.8em;
+                    color: rgb(0, 170, 255);
+                    margin-bottom: 5px;
+                }
+
+                @keyframes achievementIcon {
+                    0% { transform: scale(1) rotate(0deg); }
+                    25% { transform: scale(1.2) rotate(-10deg); }
+                    50% { transform: scale(1) rotate(0deg); }
+                    75% { transform: scale(1.2) rotate(10deg); }
+                    100% { transform: scale(1) rotate(0deg); }
+                }
+
+                body.dark-mode #achievementPopup {
+                    background: rgba(0, 140, 255, 0.35);
+                    box-shadow: 0 4px 15px rgba(0, 140, 255, 0.3);
                 }
 
                 @keyframes pulsate {
@@ -301,6 +324,7 @@
     </div>
 
     <div id="achievementPopup">
+        <i class="fas fa-trophy"></i>
         <div id="achievementText"></div>
     </div>
 

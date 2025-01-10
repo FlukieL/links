@@ -16,11 +16,29 @@ document.addEventListener('DOMContentLoaded', function() {
     function showAchievementPopup(name) {
         const popup = document.getElementById('achievementPopup');
         const text = document.getElementById('achievementText');
-        text.textContent = `Achievement Unlocked: ${name}`;
+        
+        // Clear existing content
+        text.innerHTML = name;
+        
+        // Add trophy icon
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-trophy';
+        
+        // Remove existing icon if any
+        const existingIcon = popup.querySelector('i');
+        if (existingIcon) {
+            popup.removeChild(existingIcon);
+        }
+        
+        // Add new icon at the start
+        popup.insertBefore(icon, popup.firstChild);
+        
         popup.classList.add('show');
+        
+        // Remove the popup after animation
         setTimeout(() => {
             popup.classList.remove('show');
-        }, 3000);
+        }, 5000);
     }
 
     function checkAllAchievements() {
