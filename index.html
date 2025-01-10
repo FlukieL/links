@@ -37,6 +37,111 @@
                         transform: scale(30) rotate(3600deg);
                         }
                 }
+
+                #achievementsSection {
+                    text-align: center;
+                    margin-top: 30px;
+                    padding: 20px;
+                    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                }
+
+                .achievements-header {
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    color: rgb(99, 99, 99);
+                }
+
+                .achievements-header i {
+                    transition: transform 0.3s ease;
+                }
+
+                .achievements-header.expanded i {
+                    transform: rotate(180deg);
+                }
+
+                .achievements-content {
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.3s ease-out;
+                }
+
+                .achievements-content.expanded {
+                    max-height: 500px; /* Adjust this value based on content height */
+                }
+
+                #achievementsSection h2 {
+                    color: rgb(99, 99, 99);
+                    font-weight: 500;
+                    font-size: 1.2em;
+                }
+
+                .achievements-grid {
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                    margin: 20px 0;
+                }
+
+                .achievement {
+                    padding: 15px;
+                    border-radius: 10px;
+                    background: #f0f0f0;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    opacity: 0.5;
+                    transition: all 0.3s ease;
+                    font-weight: 500;
+                    color: rgb(99, 99, 99);
+                }
+
+                .achievement span {
+                    margin-top: 5px;
+                    font-size: 0.9em;
+                }
+
+                .achievement.unlocked {
+                    opacity: 1;
+                    background: #e0ffe0;
+                }
+
+                .achievement i {
+                    font-size: 24px;
+                    margin-bottom: 10px;
+                }
+
+                #winner {
+                    color: gold;
+                    font-size: 24px;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                    text-align: center;
+                    width: 100%;
+                }
+
+                #achievementPopup {
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(-100%);
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 15px 30px;
+                    border-radius: 5px;
+                    transition: transform 0.3s ease;
+                    z-index: 1000;
+                    pointer-events: none;
+                    opacity: 0;  /* Start hidden */
+                    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    font-weight: 500;
+                }
+
+                #achievementPopup.show {
+                    transform: translateX(-50%) translateY(0);
+                    opacity: 1;
+                }
             </style>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,6 +161,9 @@
     onmouseout="this.classList.remove('hover')">
 
     <spam id="userName">Luke Harper</spam>
+    <div id="winner" style="display: none; margin-top: 10px;">
+        <h3 style="margin: 0;">YOU'RE WINNER!</h3>
+    </div>
 
     <div id="links">
             <a class="link" href="https://lukeharper.co.uk" target="_blank" style="border-radius: 25px;"><i
@@ -105,6 +213,33 @@
 		</a>
     </div>
 
+    <div id="achievementsSection">
+        <div class="achievements-header" onclick="toggleAchievements(this)">
+            <h2 style="margin: 0;">Achievements</h2>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="achievements-content">
+            <div class="achievements-grid">
+                <div class="achievement" id="faceOff">
+                    <i class="fas fa-user-ninja"></i>
+                    <span>Face Off</span>
+                </div>
+                <div class="achievement" id="checkName">
+                    <i class="fas fa-signature"></i>
+                    <span>Check My Name</span>
+                </div>
+                <div class="achievement" id="nightDay">
+                    <i class="fas fa-adjust"></i>
+                    <span>Night and Day</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="achievementPopup">
+        <div id="achievementText"></div>
+    </div>
+
     <!-- Javascript -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src="index.js"></script>
@@ -121,6 +256,38 @@
                 clickCount = 0; // Reset click count
             }
         };</script>
+
+    <script>
+        // Update achievement visuals on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const achievements = JSON.parse(localStorage.getItem('achievements') || '{}');
+            
+            if (achievements['Face Off']) {
+                document.getElementById('faceOff').classList.add('unlocked');
+            }
+            if (achievements['Check My Name']) {
+                document.getElementById('checkName').classList.add('unlocked');
+            }
+            if (achievements['Night and Day']) {
+                document.getElementById('nightDay').classList.add('unlocked');
+            }
+            
+            // Check for winner status
+            const allAchievements = ['Face Off', 'Check My Name', 'Night and Day'];
+            const completed = allAchievements.every(achievement => achievements[achievement]);
+            if (completed) {
+                document.getElementById('winner').style.display = 'block';
+            }
+        });
+    </script>
+
+    <script>
+        function toggleAchievements(header) {
+            const content = header.nextElementSibling;
+            header.classList.toggle('expanded');
+            content.classList.toggle('expanded');
+        }
+    </script>
 </body>
 
 </html>
