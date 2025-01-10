@@ -29,8 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const completed = allAchievements.every(achievement => achievements[achievement]);
         
         const winner = document.getElementById('winner');
-        if (completed && winner) {
+        const resetButton = document.querySelector('.reset-achievements');
+        
+        if (completed) {
             winner.style.display = 'block';
+            resetButton.style.display = 'inline-block';
+        } else {
+            winner.style.display = 'none';
+            resetButton.style.display = 'none';
         }
     }
 
@@ -67,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.classList.add("fa-sun");
             e.style.color = "rgb(225, 225, 0)";
             document.body.style.background = 'rgb(10, 10, 10)';
+            document.body.classList.add('dark-mode');
             document.querySelector('#userName').style.color = '#fff';
 
             let links = document.querySelectorAll('.link');
@@ -84,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.classList.add("fa-moon");
             e.style.color = "#585858";
             document.body.style.background = 'rgb(243, 242, 242)';
+            document.body.classList.remove('dark-mode');
             document.querySelector('#userName').style.color = 'rgb(99, 99, 99)';
 
             let links = document.querySelectorAll('.link');
@@ -119,4 +127,29 @@ document.addEventListener('DOMContentLoaded', function() {
             clickCount = 0;
         }
     };
+
+    const achievements = JSON.parse(localStorage.getItem('achievements') || '{}');
+    
+    if (achievements['Face Off']) {
+        document.getElementById('faceOff').classList.add('unlocked');
+    }
+    if (achievements['Check My Name']) {
+        document.getElementById('checkName').classList.add('unlocked');
+    }
+    if (achievements['Night and Day']) {
+        document.getElementById('nightDay').classList.add('unlocked');
+    }
+    
+    checkAllAchievements();
 });
+
+window.resetAchievements = function() {
+    if (confirm('Are you sure you want to reset all achievements?')) {
+        localStorage.removeItem('achievements');
+        document.querySelectorAll('.achievement').forEach(achievement => {
+            achievement.classList.remove('unlocked');
+        });
+        document.getElementById('winner').style.display = 'none';
+        document.querySelector('.reset-achievements').style.display = 'none';
+    }
+}

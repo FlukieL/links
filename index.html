@@ -43,6 +43,10 @@
                     margin-top: 30px;
                     padding: 20px;
                     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    max-width: 680px; /* Match the width of the links section */
+                    margin-left: auto;
+                    margin-right: auto;
+                    padding: 0 20px;
                 }
 
                 .achievements-header {
@@ -81,14 +85,15 @@
                 .achievements-grid {
                     display: flex;
                     justify-content: center;
-                    gap: 20px;
+                    gap: 10px;
                     margin: 20px 0;
+                    width: 100%;
                 }
 
                 .achievement {
                     padding: 15px;
-                    border-radius: 10px;
-                    background: #f0f0f0;
+                    border-radius: 25px;
+                    background: rgba(0, 140, 255, 0.1);  /* Light blue background */
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -96,6 +101,9 @@
                     transition: all 0.3s ease;
                     font-weight: 500;
                     color: rgb(99, 99, 99);
+                    flex: 1;
+                    border: 1px solid rgba(0, 140, 255, 0.2);
+                    backdrop-filter: blur(10px);
                 }
 
                 .achievement span {
@@ -105,12 +113,12 @@
 
                 .achievement.unlocked {
                     opacity: 1;
-                    background: #e0ffe0;
+                    background: rgba(0, 140, 255, 0.15);
+                    box-shadow: 0 2px 5px rgba(0, 140, 255, 0.2);
                 }
 
                 .achievement i {
-                    font-size: 24px;
-                    margin-bottom: 10px;
+                    color: rgb(0, 140, 255);  /* Blue icon color */
                 }
 
                 #winner {
@@ -141,6 +149,59 @@
                 #achievementPopup.show {
                     transform: translateX(-50%) translateY(0);
                     opacity: 1;
+                }
+
+                /* Add this to your existing mostrar function in script.js */
+                body.dark-mode .achievement {
+                    background: rgba(0, 140, 255, 0.15);
+                    color: #fff;
+                    border: 1px solid rgba(0, 140, 255, 0.3);
+                }
+
+                body.dark-mode .achievement.unlocked {
+                    background: rgba(0, 140, 255, 0.25);
+                    box-shadow: 0 2px 5px rgba(0, 140, 255, 0.3);
+                }
+
+                body.dark-mode .achievement i {
+                    color: rgb(0, 170, 255);  /* Lighter blue for dark mode */
+                }
+
+                @keyframes pulsate {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                    100% { transform: scale(1); }
+                }
+
+                #winner h3 {
+                    animation: pulsate 0.5s ease-in-out infinite;
+                    display: inline-block;
+                }
+
+                .reset-achievements {
+                    display: none;
+                    margin-top: 15px;
+                    padding: 8px 16px;
+                    background: rgba(255, 0, 0, 0.1);
+                    border: 1px solid rgba(255, 0, 0, 0.3);
+                    color: #ff3333;
+                    border-radius: 15px;
+                    cursor: pointer;
+                    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                    transition: all 0.3s ease;
+                }
+
+                .reset-achievements:hover {
+                    background: rgba(255, 0, 0, 0.2);
+                }
+
+                body.dark-mode .reset-achievements {
+                    background: rgba(255, 0, 0, 0.2);
+                    color: #ff6666;
+                }
+
+                body.dark-mode .reset-achievements:hover {
+                    background: rgba(255, 0, 0, 0.3);
                 }
             </style>
 <head>
@@ -233,6 +294,9 @@
                     <span>Night and Day</span>
                 </div>
             </div>
+            <button class="reset-achievements" onclick="resetAchievements()">
+                <i class="fas fa-trash-alt"></i> Reset Achievements
+            </button>
         </div>
     </div>
 
