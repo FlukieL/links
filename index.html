@@ -231,6 +231,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Luke Harper - Links</title>
+    <meta name="theme-color" content="#ffffff"/>
+    <meta name="description" content="Luke Harper's Social Links"/>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/imagens/icon-192x192.png">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="fa6.6/css/all.css">
     <link rel="icon" href="assets/imagens/favicon.ico" type="image/x-icon" />
@@ -374,6 +378,20 @@
             const content = header.nextElementSibling;
             header.classList.toggle('expanded');
             content.classList.toggle('expanded');
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
         }
     </script>
 </body>
