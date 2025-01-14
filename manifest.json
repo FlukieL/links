@@ -1,6 +1,7 @@
 {
     "name": "Luke Harper Links",
-    "short_name": "Luke Links",
+    // "short_name": "Luke Links",
+    // Short name disabled to prevent install prompt
     "description": "Luke Harper's Social Links",
     "start_url": "/",
     "display": "standalone",
