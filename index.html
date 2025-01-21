@@ -103,6 +103,7 @@
                     color: rgb(99, 99, 99);
                     flex: 1;
                     border: 1px solid rgba(0, 140, 255, 0.2);
+                    -webkit-backdrop-filter: blur(10px);
                     backdrop-filter: blur(10px);
                 }
 
@@ -142,6 +143,7 @@
                     z-index: 1000;
                     pointer-events: none;
                     opacity: 0;
+                    -webkit-backdrop-filter: blur(10px);
                     backdrop-filter: blur(10px);
                     border: 1px solid rgba(0, 140, 255, 0.3);
                     box-shadow: 0 4px 15px rgba(0, 140, 255, 0.2);
@@ -228,8 +230,8 @@
                 }
             </style>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Luke Harper - Links</title>
     <meta name="description" content="Luke Harper's Social Links"/>
     <link rel="manifest" href="manifest.json">
@@ -253,49 +255,53 @@
     </div>
 
     <div id="links">
-            <a class="link" href="https://lukeharper.co.uk" target="_blank" style="border-radius: 25px;"><i
+            <a class="link" href="https://lukeharper.co.uk" target="_blank" rel="noopener" style="border-radius: 25px;"><i
                 class="fas fa-globe" aria-hidden="true"></i> CV/Skills</a>
                 <div class="link-container">
-                        <a class="link" href="https://twitch.tv/Flukie" target="_blank" style="border-radius: 25px;"><i
+                        <a class="link" href="https://twitch.tv/Flukie" target="_blank" rel="noopener" style="border-radius: 25px;"><i
                                 class="fab fa-twitch"></i> Twitch</a>
-                        <a class="link" href="https://kick.com/Flukie" target="_blank" style="border-radius: 25px;"><i
+                        <a class="link" href="https://kick.com/Flukie" target="_blank" rel="noopener" style="border-radius: 25px;"><i
                                 class="fab fa-kick" aria-hidden="true"></i> Kick</a>
                     </div>
-                    <a class="link" href="https://vk.com/videos512257790" target="_blank" style="border-radius: 25px;"><i
-                        class="fab fa-vk" aria-hidden="true"></i> DJ/Livestream Archive</a>	
-                        <a class="link" href="https://www.instagram.com/flukiel" target="_blank" style="border-radius: 25px;">
-                            <i class="fab fa-instagram" aria-hidden="true"></i> Instagram
-                        </a>
-                        <a class="link" href="https://spotify.lukeharper.co.uk" target="_blank" style="border-radius: 25px;">
-                            <i class="fab fa-spotify" aria-hidden="true"></i> Spotify
-                        </a>
-                        <a class="link" href="https://twitter.lukeharper.co.uk" target="_blank" style="border-radius: 25px;"><i
-                            class="fab fa-twitter" aria-hidden="true"></i> 𝕏</a>
-                            <div class="link-container">
-                                <a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" style="border-radius: 25px;">
-                                    <i class="fab fa-youtube" aria-hidden="true"></i> YouTube
-                                </a>
-                                <a class="link" href="https://www.youtube.com/@flukie4876/streams" target="_blank" style="border-radius: 25px;">
-                                    <i class="fas fa-gamepad" aria-hidden="true"></i> YouTube - Livestreams
-                                </a>
-                            </div>	
-                            <a class="link" href="https://snake.lukeharper.co.uk" target="_blank" style="border-radius: 25px;"><i class="fas fa-gamepad"></i> Snake Game</a>		
-		<a class="link" href="https://www.tiktok.com/@flukiel" target="_blank" style="border-radius: 25px;"><i
-                class="fab fa-tiktok" aria-hidden="true"></i> TikTok</a>	
-                <a class="link" href="https://www.snapchat.com/add/flukiel" target="_blank" style="border-radius: 25px;"><i
-                        class="fab fa-snapchat" aria-hidden="true"></i> Snapchat</a>	
+                    <div class="link-container">
+                        <a class="link" href="https://vk.com/videos512257790" target="_blank" rel="noopener" style="border-radius: 25px;"><i
+                            class="fab fa-vk" aria-hidden="true"></i> DJ Video</a>
+                        <a class="link" href="https://www.mixcloud.com/FlukieL/" target="_blank" rel="noopener" style="border-radius: 25px;"><i
+                            class="fab fa-mixcloud" aria-hidden="true"></i> DJ Audio</a>
+                    </div>
+                    <a class="link" href="https://www.instagram.com/flukiel" target="_blank" rel="noopener" style="border-radius: 25px;">
+                        <i class="fab fa-instagram" aria-hidden="true"></i> Instagram
+                    </a>
+                    <a class="link" href="https://spotify.lukeharper.co.uk" target="_blank" rel="noopener" style="border-radius: 25px;">
+                        <i class="fab fa-spotify" aria-hidden="true"></i> Spotify
+                    </a>
+                    <a class="link" href="https://twitter.lukeharper.co.uk" target="_blank" rel="noopener" style="border-radius: 25px;"><i
+                        class="fab fa-twitter" aria-hidden="true"></i> 𝕏</a>
+                        <div class="link-container">
+                            <a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" rel="noopener" style="border-radius: 25px;">
+                                <i class="fab fa-youtube" aria-hidden="true"></i> YouTube
+                            </a>
+                            <a class="link" href="https://www.youtube.com/@flukie4876/streams" target="_blank" rel="noopener" style="border-radius: 25px;">
+                                <i class="fas fa-gamepad" aria-hidden="true"></i> YouTube - Livestreams
+                            </a>
+                        </div>	
+                        <a class="link" href="https://snake.lukeharper.co.uk" target="_blank" rel="noopener" style="border-radius: 25px;"><i class="fas fa-gamepad"></i> Snake Game</a>		
+    <a class="link" href="https://www.tiktok.com/@flukiel" target="_blank" rel="noopener" style="border-radius: 25px;"><i
+            class="fab fa-tiktok" aria-hidden="true"></i> TikTok</a>	
+            <a class="link" href="https://www.snapchat.com/add/flukiel" target="_blank" rel="noopener" style="border-radius: 25px;"><i
+                    class="fab fa-snapchat" aria-hidden="true"></i> Snapchat</a>	
     </div>
     <div class="footer">
-        <a href="https://soundcloud.com/flukie" target="_blank">
+        <a href="https://soundcloud.com/flukie" target="_blank" rel="noopener">
             <i style="line-height: 38px;" class="fab fa-soundcloud circulo" aria-hidden="true"></i>
         </a>
-        <a href="https://www.facebook.com/flukiel" target="_blank">
+        <a href="https://www.facebook.com/flukiel" target="_blank" rel="noopener">
             <i style="line-height: 38px;" class="fab fa-facebook-f circulo" aria-hidden="true"></i>
         </a>
-        <a href="https://linkedin.lukeharper.co.uk" target="_blank">
+        <a href="https://linkedin.lukeharper.co.uk" target="_blank" rel="noopener">
             <i style="line-height: 38px;" class="fab fa-linkedin circulo" aria-hidden="true"></i>
         </a>
-        <a href="https://whatsapp.lukeharper.co.uk" target="_blank">
+        <a href="https://whatsapp.lukeharper.co.uk" target="_blank" rel="noopener">
             <i style="line-height: 38px;" class="fab fa-whatsapp circulo" aria-hidden="true"></i>
 		</a>
     </div>
