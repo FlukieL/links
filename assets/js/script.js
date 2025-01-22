@@ -300,6 +300,25 @@ document.addEventListener('DOMContentLoaded', function() {
         'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00,
         'A#4': 466.16, 'B4': 493.88, 'C5': 523.25
     };
+    
+    // Keyboard mapping for number keys to notes
+    const KEY_TO_NOTE = {
+        '1': 'C4',
+        '2': 'D4',
+        '3': 'E4',
+        '4': 'F4',
+        '5': 'G4',
+        '6': 'A4',
+        '7': 'B4',
+        '8': 'C5',
+        // Sharp/flat notes
+        'Shift+1': 'C#4',
+        'Shift+2': 'D#4',
+        'Shift+4': 'F#4',
+        'Shift+5': 'G#4',
+        'Shift+6': 'A#4'
+    };
+
     let audioContext = null;
     let currentInstrument = 0;
     const instruments = [
@@ -441,6 +460,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 150);
             }
         });
+    });
+
+    // Add keyboard support for piano mode
+    document.addEventListener('keydown', (e) => {
+        if (!document.body.classList.contains('piano-mode')) return;
+        
+        // Check if it's a number key (1-8)
+        const key = e.key;
+        if (!/^[1-8]$/.test(key)) return;
+        
+        // Prevent default behavior (like page scrolling)
+        e.preventDefault();
+        
+        // Determine which note to play based on if shift is held
+        const noteKey = e.shiftKey ? `Shift+${key}` : key;
+        const noteName = KEY_TO_NOTE[noteKey];
+        
+        if (noteName) {
+            // Play the note
+            const frequency = NOTE_FREQUENCIES[noteName];
+            playNote(frequency);
+            
+            // Highlight the corresponding link if it exists
+            const links = document.querySelectorAll('.link');
+            links.forEach(link => {
+                if (link.getAttribute('data-note') === noteName) {
+                    link.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        link.style.transform = '';
+                    }, 200);
+                }
+            });
+            
+            // Show a toast with the note name
+            showToast(`Playing note: ${noteName}`);
+        }
     });
 });
 
