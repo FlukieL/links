@@ -219,20 +219,42 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Toast Notification
+    // Page Share Button
+    document.querySelector('.page-share').addEventListener('click', async () => {
+        const shareData = {
+            title: 'Luke Harper - Links',
+            text: 'Check out Luke Harper\'s social links!',
+            url: window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                await navigator.clipboard.writeText(window.location.href);
+                showToast('Link copied to clipboard!');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    });
+
+    // Toast notification function
     function showToast(message) {
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.textContent = message;
         document.body.appendChild(toast);
-
+        
+        // Trigger reflow to enable transition
+        toast.offsetHeight;
+        toast.classList.add('show');
+        
         setTimeout(() => {
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 2000);
-        }, 100);
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 });
 

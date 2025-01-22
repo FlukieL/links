@@ -470,11 +470,13 @@ body.dark-mode #achievementPopup {
 .links-header {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     margin-bottom: var(--space-md);
     padding: 0 var(--space-md);
+    gap: var(--space-sm);
 }
 
-.view-toggle {
+.view-toggle, .page-share {
     background: none;
     border: none;
     color: var(--color-text);
@@ -485,7 +487,7 @@ body.dark-mode #achievementPopup {
     margin-bottom: var(--space-sm);
 }
 
-.view-toggle:hover {
+.view-toggle:hover, .page-share:hover {
     background: var(--color-primary-light);
     color: var(--color-primary);
 }
