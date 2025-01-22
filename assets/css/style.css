@@ -105,7 +105,8 @@ body {
 
 /* Single link (not in container) */
 #links > .link {
-    width: 675px;
+    width: 100%;
+    max-width: 675px;
 }
 
 .link {
@@ -492,7 +493,7 @@ body.dark-mode #achievementPopup {
 /* Grid View */
 .links-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(675px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--space-md);
     width: 100%;
 }
@@ -578,4 +579,70 @@ body.dark-mode .link:hover span {
     width: 100%;
     max-width: 675px;
     padding: 0;
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 768px) {
+    body {
+        padding: var(--space-lg) var(--space-sm);
+    }
+
+    .links-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+    }
+
+    .link-container {
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    .link-container .link {
+        width: 100%;
+    }
+
+    .night_mode {
+        top: var(--space-sm);
+        right: var(--space-sm);
+    }
+
+    #userPhoto:hover, 
+    #userPhoto:focus {
+        transform: scale(1.5) rotate(360deg);
+    }
+
+    .links-grid.list-view {
+        grid-template-columns: 1fr;
+    }
+
+    .links-grid.list-view .link {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .link {
+        padding: 0 var(--space-lg);
+        font-size: 0.9rem;
+        height: 48px;
+    }
+
+    .link i {
+        margin-right: var(--space-sm);
+        font-size: 1rem;
+    }
+
+    .footer {
+        gap: var(--space-sm);
+    }
+
+    .circulo {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+    }
+
+    .links-grid {
+        gap: var(--space-xs);
+    }
 }
