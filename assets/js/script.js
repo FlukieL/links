@@ -1,4 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Check system dark mode preference and set initial state
+    const darkModeButton = document.querySelector('.js-night-mode');
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mostrar(darkModeButton);
+    }
+
+    // Add listener for system dark mode changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (e.matches !== document.body.classList.contains('dark-mode')) {
+            mostrar(darkModeButton);
+        }
+    });
+
     const userName = document.getElementById('userName');
     let mouseOverTimeout;
     
@@ -159,6 +172,68 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     checkAllAchievements();
+
+    // View Toggle
+    const viewToggle = document.querySelector('.view-toggle');
+    const linksContainer = document.querySelector('#links');
+    
+    if (viewToggle) {
+        viewToggle.addEventListener('click', () => {
+            linksContainer.classList.toggle('links-grid');
+            if (linksContainer.classList.contains('links-grid')) {
+                linksContainer.classList.remove('list-view');
+                viewToggle.querySelector('i').classList.remove('fa-list');
+                viewToggle.querySelector('i').classList.add('fa-grip-horizontal');
+            } else {
+                linksContainer.classList.add('list-view');
+                viewToggle.querySelector('i').classList.remove('fa-grip-horizontal');
+                viewToggle.querySelector('i').classList.add('fa-list');
+            }
+        });
+    }
+
+    // Share Functionality
+    document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const link = btn.closest('.link');
+            const url = link.href;
+            const title = link.querySelector('span').textContent;
+
+            try {
+                if (navigator.share) {
+                    await navigator.share({
+                        title: 'Check out this link!',
+                        text: `Check out ${title} on Luke Harper's links page`,
+                        url: url
+                    });
+                } else {
+                    await navigator.clipboard.writeText(url);
+                    showToast('Link copied to clipboard!');
+                }
+            } catch (err) {
+                console.error('Error sharing:', err);
+            }
+        });
+    });
+
+    // Toast Notification
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }, 100);
+    }
 });
 
 window.resetAchievements = function() {

@@ -7,66 +7,151 @@
     <meta name="description" content="Luke Harper's Social Links"/>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="assets/imagens/icon-192x192.png">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="fa6.6/css/all.css">
     <link rel="icon" href="assets/imagens/favicon.ico" type="image/x-icon" />
 </head>
 
 <body>
-    <i class="fas fa-moon fa-2x night_mode js-night-mode"></i>
+    <button class="fas fa-moon fa-2x night_mode js-night-mode" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
 
-    <img id="userPhoto" src="assets/imagens/profile.jpg" alt="User Photo" class="profile-photo">
+    <img id="userPhoto" src="assets/imagens/profile.jpg" alt="Luke Harper's Profile Photo" class="profile-photo" loading="lazy">
 
     <span id="userName">Luke Harper</span>
-    <div id="winner" class="winner-banner">
+    <div id="winner" class="winner-banner" role="alert" aria-live="polite">
         <h3>YOU'RE WINNER!</h3>
     </div>
 
     <div id="links">
-        <a class="link" href="https://lukeharper.co.uk" target="_blank" rel="noopener">
-            <i class="fas fa-globe" aria-hidden="true"></i> <span>CV/Skills</span>
+        <div class="links-header">
+            <button class="view-toggle" aria-label="Toggle view layout" title="Toggle grid/list view">
+                <i class="fas fa-grip-horizontal"></i>
+            </button>
+        </div>
+        <a class="link" href="https://lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Visit CV/Skills website">
+            <div class="link-content">
+                <i class="fas fa-globe" aria-hidden="true"></i>
+                <span>CV/Skills</span>
+            </div>
+            <button class="share-btn" aria-label="Share CV/Skills link" title="Share link">
+                <i class="fas fa-share-alt"></i>
+            </button>
         </a>
         <div class="link-container">
-            <a class="link" href="https://twitch.tv/Flukie" target="_blank" rel="noopener">
-                <i class="fab fa-twitch" aria-hidden="true"></i> <span>Twitch</span>
+            <a class="link" href="https://twitch.tv/Flukie" target="_blank" rel="noopener" aria-label="Visit Twitch channel">
+                <div class="link-content">
+                    <i class="fab fa-twitch" aria-hidden="true"></i>
+                    <span>Twitch</span>
+                </div>
+                <button class="share-btn" aria-label="Share Twitch link" title="Share link">
+                    <i class="fas fa-share-alt"></i>
+                </button>
             </a>
-            <a class="link" href="https://kick.com/Flukie" target="_blank" rel="noopener">
-                <i class="fab fa-kick" aria-hidden="true"></i> <span>Kick</span>
+            <a class="link" href="https://kick.com/Flukie" target="_blank" rel="noopener" aria-label="Visit Kick channel">
+                <div class="link-content">
+                    <i class="fab fa-kick" aria-hidden="true"></i>
+                    <span>Kick</span>
+                </div>
+                <button class="share-btn" aria-label="Share Kick link" title="Share link">
+                    <i class="fas fa-share-alt"></i>
+                </button>
             </a>
         </div>
         <div class="link-container">
-            <a class="link" href="https://vk.com/videos512257790" target="_blank" rel="noopener">
-                <i class="fab fa-vk" aria-hidden="true"></i> <span>DJ Video</span>
+            <a class="link" href="https://vk.com/videos512257790" target="_blank" rel="noopener" aria-label="Watch DJ videos">
+                <div class="link-content">
+                    <i class="fab fa-vk" aria-hidden="true"></i>
+                    <span>DJ Video</span>
+                </div>
+                <button class="share-btn" aria-label="Share DJ Video link" title="Share link">
+                    <i class="fas fa-share-alt"></i>
+                </button>
             </a>
-            <a class="link" href="https://www.mixcloud.com/FlukieL/" target="_blank" rel="noopener">
-                <i class="fab fa-mixcloud" aria-hidden="true"></i> <span>DJ Audio</span>
+            <a class="link" href="https://www.mixcloud.com/FlukieL/" target="_blank" rel="noopener" aria-label="Listen to DJ mixes">
+                <div class="link-content">
+                    <i class="fab fa-mixcloud" aria-hidden="true"></i>
+                    <span>DJ Audio</span>
+                </div>
+                <button class="share-btn" aria-label="Share DJ Audio link" title="Share link">
+                    <i class="fas fa-share-alt"></i>
+                </button>
             </a>
         </div>
-        <a class="link" href="https://www.instagram.com/flukiel" target="_blank" rel="noopener">
-            <i class="fab fa-instagram" aria-hidden="true"></i> <span>Instagram</span>
+        <a class="link" href="https://www.instagram.com/flukiel" target="_blank" rel="noopener" aria-label="Visit Instagram profile">
+            <div class="link-content">
+                <i class="fab fa-instagram" aria-hidden="true"></i>
+                <span>Instagram</span>
+            </div>
+            <button class="share-btn" aria-label="Share Instagram link" title="Share link">
+                <i class="fas fa-share-alt"></i>
+            </button>
         </a>
-        <a class="link" href="https://spotify.lukeharper.co.uk" target="_blank" rel="noopener">
-            <i class="fab fa-spotify" aria-hidden="true"></i> <span>Spotify</span>
+        <a class="link" href="https://spotify.lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Visit Spotify profile">
+            <div class="link-content">
+                <i class="fab fa-spotify" aria-hidden="true"></i>
+                <span>Spotify</span>
+            </div>
+            <button class="share-btn" aria-label="Share Spotify link" title="Share link">
+                <i class="fas fa-share-alt"></i>
+            </button>
         </a>
-        <a class="link" href="https://twitter.lukeharper.co.uk" target="_blank" rel="noopener">
-            <i class="fab fa-twitter" aria-hidden="true"></i> <span>𝕏</span>
+        <a class="link" href="https://twitter.lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Visit Twitter/X profile">
+            <div class="link-content">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+                <span>𝕏</span>
+            </div>
+            <button class="share-btn" aria-label="Share Twitter/X link" title="Share link">
+                <i class="fas fa-share-alt"></i>
+            </button>
         </a>
         <div class="link-container">
-            <a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" rel="noopener">
-                <i class="fab fa-youtube" aria-hidden="true"></i> <span>YouTube</span>
+            <a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" rel="noopener" aria-label="Watch YouTube videos">
+                <div class="link-content">
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                    <span>YouTube</span>
+                </div>
+                <button class="share-btn" aria-label="Share YouTube link" title="Share link">
+                    <i class="fas fa-share-alt"></i>
+                </button>
             </a>
-            <a class="link" href="https://www.youtube.com/@flukie4876/streams" target="_blank" rel="noopener">
-                <i class="fas fa-gamepad" aria-hidden="true"></i> <span>YouTube - Livestreams</span>
+            <a class="link" href="https://www.youtube.com/@flukie4876/streams" target="_blank" rel="noopener" aria-label="Watch YouTube livestreams">
+                <div class="link-content">
+                    <i class="fas fa-gamepad" aria-hidden="true"></i>
+                    <span>YouTube - Livestreams</span>
+                </div>
+                <button class="share-btn" aria-label="Share YouTube Livestreams link" title="Share link">
+                    <i class="fas fa-share-alt"></i>
+                </button>
             </a>
         </div>
-        <a class="link" href="https://snake.lukeharper.co.uk" target="_blank" rel="noopener">
-            <i class="fas fa-gamepad" aria-hidden="true"></i> <span>Snake Game</span>
+        <a class="link" href="https://snake.lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Play Snake Game">
+            <div class="link-content">
+                <i class="fas fa-gamepad" aria-hidden="true"></i>
+                <span>Snake Game</span>
+            </div>
+            <button class="share-btn" aria-label="Share Snake Game link" title="Share link">
+                <i class="fas fa-share-alt"></i>
+            </button>
         </a>
-        <a class="link" href="https://www.tiktok.com/@flukiel" target="_blank" rel="noopener">
-            <i class="fab fa-tiktok" aria-hidden="true"></i> <span>TikTok</span>
+        <a class="link" href="https://www.tiktok.com/@flukiel" target="_blank" rel="noopener" aria-label="Visit TikTok profile">
+            <div class="link-content">
+                <i class="fab fa-tiktok" aria-hidden="true"></i>
+                <span>TikTok</span>
+            </div>
+            <button class="share-btn" aria-label="Share TikTok link" title="Share link">
+                <i class="fas fa-share-alt"></i>
+            </button>
         </a>
-        <a class="link" href="https://www.snapchat.com/add/flukiel" target="_blank" rel="noopener">
-            <i class="fab fa-snapchat" aria-hidden="true"></i> <span>Snapchat</span>
+        <a class="link" href="https://www.snapchat.com/add/flukiel" target="_blank" rel="noopener" aria-label="Add on Snapchat">
+            <div class="link-content">
+                <i class="fab fa-snapchat" aria-hidden="true"></i>
+                <span>Snapchat</span>
+            </div>
+            <button class="share-btn" aria-label="Share Snapchat link" title="Share link">
+                <i class="fas fa-share-alt"></i>
+            </button>
         </a>
     </div>
 
