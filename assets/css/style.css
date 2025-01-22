@@ -63,6 +63,7 @@ body {
     margin: 0 auto var(--space-lg);
     border-radius: var(--radius-circle);
     transition: transform var(--transition-medium);
+    position: relative;
 }
 
 #userPhoto:hover, 
@@ -83,6 +84,39 @@ body {
     text-decoration: none;
     margin: 0 auto var(--space-lg);
     padding: 0;
+}
+
+/* Instrument indicator */
+.instrument-indicator {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    font-family: var(--font-primary);
+}
+
+.instrument-indicator.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Instrument change animation */
+@keyframes instrumentChange {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+.instrument-change {
+    animation: instrumentChange 0.5s ease;
 }
 
 /* Links Section */
@@ -439,6 +473,12 @@ body {
     100% { transform: scale(30) rotate(3600deg); }
 }
 
+.spin-grow {
+    animation: spinGrow 5s ease forwards !important;
+    transform-origin: center !important;
+    transition: none !important;
+}
+
 /* Accessibility */
 .sr-only {
     position: absolute;
@@ -499,7 +539,8 @@ body.dark-mode #achievementPopup {
     transition: color var(--transition-fast);
 }
 
-.piano-mode-toggle:hover {
+.piano-mode-toggle:hover,
+body.piano-mode .piano-mode-toggle {
     color: var(--color-primary);
 }
 

@@ -146,16 +146,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const userPhoto = document.getElementById('userPhoto');
     let clickCount = 0;
+    const PIANO_MODE_CLICKS = 99999;
+    const NORMAL_MODE_CLICKS = 10;
     
-    userPhoto.onclick = function() {
-        clickCount++;
-        if (clickCount === 10) {
-            checkAchievement('Face Off');
-            userPhoto.classList.add('spin-grow');
+    // Single consolidated click handler for userPhoto
+    userPhoto.onclick = function(e) {
+        // Always prevent default to handle our own logic
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Handle piano mode
+        if (document.body.classList.contains('piano-mode')) {
+            // Handle instrument switching
+            currentInstrument = (currentInstrument + 1) % instruments.length;
+            clickCount = 0; // Reset counter when instrument changes
+            
+            // Remove any previous instrument change animation
+            this.classList.remove('instrument-change');
+            void this.offsetWidth;
+            this.classList.add('instrument-change');
             setTimeout(() => {
-                window.location.href = "https://onlyfans.lukeharper.co.uk";
-            }, 5000);
-            clickCount = 0;
+                if (document.body.classList.contains('piano-mode')) {
+                    this.classList.remove('instrument-change');
+                }
+            }, 500);
+            
+            // Show instrument name and play demo note
+            showInstrumentIndicator();
+            playNote(440, 0.5);
+        } else {
+            // Handle normal mode clicks
+            clickCount++;
+            if (clickCount === NORMAL_MODE_CLICKS) {
+                checkAchievement('Face Off');
+                
+                // Remove any existing animations
+                this.className = '';
+                void this.offsetWidth;
+                this.classList.add('spin-grow');
+                
+                // Redirect to OnlyFans after animation
+                setTimeout(() => {
+                    window.location.href = "https://onlyfans.lukeharper.co.uk";
+                }, 5000);
+                
+                clickCount = 0;
+            }
         }
     };
 
@@ -260,12 +296,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // Piano Mode Toggle
     const pianeModeToggle = document.querySelector('.piano-mode-toggle');
     let audioContext = null;
+    let currentInstrument = 0;
+    const instruments = [
+        { type: 'sine', name: 'Piano' },
+        { type: 'square', name: 'Synth' },
+        { type: 'triangle', name: 'Music Box' },
+        { type: 'sawtooth', name: 'Electric Guitar' }
+    ];
 
     function createAudioContext() {
         if (!audioContext) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
         return audioContext;
+    }
+
+    function showInstrumentIndicator() {
+        let indicator = document.querySelector('.instrument-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.className = 'instrument-indicator';
+            document.querySelector('#userPhoto').parentNode.appendChild(indicator);
+        }
+        indicator.textContent = instruments[currentInstrument].name;
+        indicator.classList.add('show');
+        setTimeout(() => indicator.classList.remove('show'), 2000);
     }
 
     function playNote(frequency, duration = 0.2) {
@@ -277,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
             oscillator.connect(gainNode);
             gainNode.connect(ctx.destination);
             
-            oscillator.type = 'sine';
+            oscillator.type = instruments[currentInstrument].type;
             oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
             
             gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
@@ -290,25 +345,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Reset click counter when toggling piano mode
     pianeModeToggle.addEventListener('click', () => {
+        clickCount = 0;  // Reset counter when switching modes
         document.body.classList.toggle('piano-mode');
         
-        // Play a little piano scale when toggling on
-        if (document.body.classList.contains('piano-mode')) {
-            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C4 to C5
-            const userPhoto = document.getElementById('userPhoto');
-            notes.forEach((note, index) => {
-                setTimeout(() => {
-                    playNote(note, 0.5);
-                    // Rotate profile picture clockwise for even indices, counter-clockwise for odd
-                    userPhoto.style.transition = 'transform 0.2s ease';
-                    userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
-                    setTimeout(() => {
-                        userPhoto.style.transform = 'rotate(0deg)';
-                    }, 150);
-                }, index * 100);
-            });
+        // Reset any existing transform and transition when toggling piano mode
+        if (!document.body.classList.contains('piano-mode')) {
+            userPhoto.style.transform = '';
+            userPhoto.style.transition = '';
+            return;
         }
+        
+        // Show initial instrument
+        showInstrumentIndicator();
+        
+        // Play a little piano scale when toggling on
+        const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C4 to C5
+        notes.forEach((note, index) => {
+            setTimeout(() => {
+                playNote(note, 0.5);
+                // Rotate profile picture clockwise for even indices, counter-clockwise for odd
+                userPhoto.style.transition = 'transform 0.2s ease';
+                userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
+                setTimeout(() => {
+                    userPhoto.style.transform = 'rotate(0deg)';
+                }, 150);
+            }, index * 100);
+        });
     });
 
     // Add piano key sounds to links in piano mode
@@ -322,10 +386,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Rotate profile picture with each note
                 const userPhoto = document.getElementById('userPhoto');
-                userPhoto.style.transition = 'transform 0.2s ease';
+                if (userPhoto.style.transition !== 'transform 0.2s ease') {
+                    userPhoto.style.transition = 'transform 0.2s ease';
+                }
                 userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
                 setTimeout(() => {
-                    userPhoto.style.transform = 'rotate(0deg)';
+                    if (document.body.classList.contains('piano-mode')) {
+                        userPhoto.style.transform = 'rotate(0deg)';
+                    }
                 }, 150);
             }
         });
