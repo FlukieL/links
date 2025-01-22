@@ -15,6 +15,11 @@ body {
     display: block;
     margin: 35px auto 20px;
     border-radius: 50%;
+    transition: transform 0.5s ease;
+}
+
+#userPhoto:hover, #userPhoto:focus {
+    transform: scale(2.0) rotate(360deg);
 }
 
 #userName {
@@ -49,6 +54,7 @@ body {
     font-weight: bold;
     transition: all .25s cubic-bezier(.08, .59, .29, .99);
     border: solid var(--accentColor) 2px;
+    border-radius: 25px;
 }
 
 .link:hover {
@@ -64,6 +70,11 @@ body {
 
 .footer a {
     text-decoration:none;
+}
+
+.footer i {
+    font-size: 1.2em;
+    line-height: 38px;
 }
 
 .circulo {
@@ -94,4 +105,259 @@ body {
 
 .night_mode:hover {
     cursor: pointer;
+}
+
+/* Link Container */
+.link-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.link-container .link {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.link-container .link:last-child {
+    margin-right: 0;
+}
+
+/* Spin and Grow Animation */
+.spin-grow {
+    animation: spinGrow 5s forwards;
+}
+
+@keyframes spinGrow {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    100% {
+        transform: scale(30) rotate(3600deg);
+    }
+}
+
+/* Achievements Section */
+#achievementsSection {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+}
+
+.achievements-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgb(99, 99, 99);
+}
+
+.achievements-header h2 {
+    margin: 0;
+}
+
+.achievements-header i {
+    transition: transform 0.3s ease;
+}
+
+.achievements-header.expanded i {
+    transform: rotate(180deg);
+}
+
+.achievements-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.achievements-content.expanded {
+    max-height: 500px;
+}
+
+#achievementsSection h2 {
+    color: rgb(99, 99, 99);
+    font-weight: 500;
+    font-size: 1.2em;
+}
+
+/* Winner Banner */
+.winner-banner {
+    display: none;
+    margin-top: 10px;
+}
+
+.winner-banner h3 {
+    margin: 0;
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Achievements Grid */
+.achievements-grid {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.achievement {
+    padding: 15px;
+    border-radius: 25px;
+    background: rgba(0, 140, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: rgb(99, 99, 99);
+    flex: 1;
+    border: 1px solid rgba(0, 140, 255, 0.2);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.achievement span {
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.achievement.unlocked {
+    opacity: 1;
+    background: rgba(0, 140, 255, 0.15);
+    box-shadow: 0 2px 5px rgba(0, 140, 255, 0.2);
+}
+
+.achievement i {
+    color: rgb(0, 140, 255);
+}
+
+/* Achievement Popup */
+#achievementPopup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    background: rgba(0, 140, 255, 0.25);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 140, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 140, 255, 0.2);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 300px;
+}
+
+#achievementPopup.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+#achievementPopup i {
+    font-size: 24px;
+    color: rgb(0, 170, 255);
+    animation: achievementIcon 1s ease infinite;
+}
+
+#achievementText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#achievementText::before {
+    content: "Achievement Unlocked!";
+    font-size: 0.8em;
+    color: rgb(0, 170, 255);
+    margin-bottom: 5px;
+}
+
+/* Animations */
+@keyframes achievementIcon {
+    0% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.2) rotate(-10deg); }
+    50% { transform: scale(1) rotate(0deg); }
+    75% { transform: scale(1.2) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes pulsate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Winner Styles */
+#winner {
+    color: gold;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-align: center;
+    width: 100%;
+}
+
+#winner h3 {
+    animation: pulsate 0.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+/* Reset Achievements Button */
+.reset-achievements {
+    display: none;
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    color: #ff3333;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    transition: all 0.3s ease;
+}
+
+.reset-achievements:hover {
+    background: rgba(255, 0, 0, 0.2);
+}
+
+/* Dark Mode Styles */
+body.dark-mode #achievementPopup {
+    background: rgba(0, 140, 255, 0.35);
+    box-shadow: 0 4px 15px rgba(0, 140, 255, 0.3);
+}
+
+body.dark-mode .reset-achievements {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff6666;
+}
+
+body.dark-mode .reset-achievements:hover {
+    background: rgba(255, 0, 0, 0.3);
 }
