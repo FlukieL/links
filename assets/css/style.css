@@ -480,16 +480,54 @@ body.dark-mode #achievementPopup {
     background: none;
     border: none;
     color: var(--color-text);
+    padding: var(--space-sm);
     cursor: pointer;
-    padding: var(--space-xs);
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    margin-bottom: var(--space-sm);
+    transition: color var(--transition-fast);
 }
 
 .view-toggle:hover, .page-share:hover {
     background: var(--color-primary-light);
     color: var(--color-primary);
+}
+
+.piano-mode-toggle {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    padding: var(--space-sm);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.piano-mode-toggle:hover {
+    color: var(--color-primary);
+}
+
+/* Piano mode styles */
+body.piano-mode .link {
+    background: var(--color-white);
+    color: var(--color-text);
+    border: 1px solid #ccc;
+    margin-bottom: 2px;
+    height: 48px;
+    transform-origin: left;
+    transition: all 0.1s ease;
+}
+
+body.piano-mode .link:hover {
+    background: var(--color-primary-light);
+    transform: scale(0.98);
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+body.piano-mode .link:active {
+    background: var(--color-primary);
+    color: var(--color-white);
+    transform: scale(0.97);
+}
+
+body.piano-mode .link-container {
+    margin-bottom: 2px;
 }
 
 /* Grid View */

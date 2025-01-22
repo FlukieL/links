@@ -256,6 +256,80 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
+
+    // Piano Mode Toggle
+    const pianeModeToggle = document.querySelector('.piano-mode-toggle');
+    let audioContext = null;
+
+    function createAudioContext() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioContext;
+    }
+
+    function playNote(frequency, duration = 0.2) {
+        try {
+            const ctx = createAudioContext();
+            const oscillator = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+            
+            gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+            
+            oscillator.start(ctx.currentTime);
+            oscillator.stop(ctx.currentTime + duration);
+        } catch (error) {
+            console.error('Error playing note:', error);
+        }
+    }
+
+    pianeModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('piano-mode');
+        
+        // Play a little piano scale when toggling on
+        if (document.body.classList.contains('piano-mode')) {
+            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C4 to C5
+            const userPhoto = document.getElementById('userPhoto');
+            notes.forEach((note, index) => {
+                setTimeout(() => {
+                    playNote(note, 0.5);
+                    // Rotate profile picture clockwise for even indices, counter-clockwise for odd
+                    userPhoto.style.transition = 'transform 0.2s ease';
+                    userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
+                    setTimeout(() => {
+                        userPhoto.style.transform = 'rotate(0deg)';
+                    }, 150);
+                }, index * 100);
+            });
+        }
+    });
+
+    // Add piano key sounds to links in piano mode
+    document.querySelectorAll('.link').forEach((link, index) => {
+        link.addEventListener('mouseenter', () => {
+            if (document.body.classList.contains('piano-mode')) {
+                // Use pentatonic scale for a pleasant sound
+                const notes = [261.63, 293.66, 329.63, 392.00, 440.00];
+                const note = notes[index % notes.length];
+                playNote(note);
+                
+                // Rotate profile picture with each note
+                const userPhoto = document.getElementById('userPhoto');
+                userPhoto.style.transition = 'transform 0.2s ease';
+                userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
+                setTimeout(() => {
+                    userPhoto.style.transform = 'rotate(0deg)';
+                }, 150);
+            }
+        });
+    });
 });
 
 window.resetAchievements = function() {
