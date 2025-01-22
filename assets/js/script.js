@@ -426,28 +426,101 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add piano key sounds to links in piano mode
     document.querySelectorAll('.link').forEach((link, index) => {
-        link.addEventListener('mouseenter', () => {
+        // Add tap counter for each link
+        let tapCount = 0;
+        const TAPS_TO_FOLLOW = 100;
+
+        // Touch event handler for mobile devices
+        link.addEventListener('touchstart', (e) => {
             if (document.body.classList.contains('piano-mode')) {
-                // Melody sequence from the sheet music
+                e.preventDefault(); // Prevent default touch behavior
+                e.stopPropagation(); // Stop event bubbling
+                
                 const melodicNotes = [
-                    NOTE_FREQUENCIES['F4'],  // First note
-                    NOTE_FREQUENCIES['A4'],  // Second note
-                    NOTE_FREQUENCIES['F4'],  // Third note
-                    NOTE_FREQUENCIES['A4'],  // Fourth note
-                    NOTE_FREQUENCIES['F4'],  // Fifth note
-                    NOTE_FREQUENCIES['A4'],  // Sixth note
-                    NOTE_FREQUENCIES['C5'],  // Seventh note
-                    NOTE_FREQUENCIES['A4'],  // Eighth note
-                    NOTE_FREQUENCIES['F4'],  // Ninth note
-                    NOTE_FREQUENCIES['A4'],  // Tenth note
-                    NOTE_FREQUENCIES['F4'],  // Eleventh note
-                    NOTE_FREQUENCIES['D4']   // Twelfth note
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['C5'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['D4']
                 ];
                 
                 const note = melodicNotes[index % melodicNotes.length];
-                playNote(note, 0.2); // Shortened duration for quicker response
+                playNote(note, 0.2);
+                
+                // Increment tap count
+                tapCount++;
+                
+                // Add visual feedback for touch
+                link.style.transform = 'scale(1.05)';
+                link.style.opacity = '0.8';
+                
+                // Show progress towards link activation
+                if (tapCount < TAPS_TO_FOLLOW) {
+                    showToast(`Tap ${TAPS_TO_FOLLOW - tapCount} more times to follow link`);
+                }
+                
+                // Reset visual feedback and check tap count
+                setTimeout(() => {
+                    link.style.transform = '';
+                    link.style.opacity = '';
+                    
+                    // Follow link if tap count reached
+                    if (tapCount >= TAPS_TO_FOLLOW) {
+                        tapCount = 0; // Reset counter
+                        showToast('Following link...');
+                        setTimeout(() => {
+                            window.location.href = link.href;
+                        }, 500);
+                    }
+                }, 300);
                 
                 // Rotate profile picture with each note
+                const userPhoto = document.getElementById('userPhoto');
+                if (userPhoto.style.transition !== 'transform 0.2s ease') {
+                    userPhoto.style.transition = 'transform 0.2s ease';
+                }
+                userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
+                setTimeout(() => {
+                    if (document.body.classList.contains('piano-mode')) {
+                        userPhoto.style.transform = 'rotate(0deg)';
+                    }
+                }, 150);
+            }
+        });
+
+        // Reset tap counter when leaving piano mode
+        document.querySelector('.piano-mode-toggle').addEventListener('click', () => {
+            tapCount = 0;
+        });
+
+        // Keep existing mouseenter event for desktop
+        link.addEventListener('mouseenter', () => {
+            if (document.body.classList.contains('piano-mode')) {
+                const melodicNotes = [
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['C5'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['A4'],
+                    NOTE_FREQUENCIES['F4'],
+                    NOTE_FREQUENCIES['D4']
+                ];
+                
+                const note = melodicNotes[index % melodicNotes.length];
+                playNote(note, 0.2);
+                
                 const userPhoto = document.getElementById('userPhoto');
                 if (userPhoto.style.transition !== 'transform 0.2s ease') {
                     userPhoto.style.transition = 'transform 0.2s ease';
