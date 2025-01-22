@@ -526,13 +526,28 @@ body.dark-mode {
 }
 
 body.dark-mode .link {
-    background-color: #2d2d2d;
-    border-color: #3d3d3d;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-white);
 }
 
 body.dark-mode .link:hover {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
+    background-color: var(--color-white);
+    color: var(--color-primary);
+}
+
+body.dark-mode .link:hover .share-btn {
+    color: var(--color-primary);
+    opacity: 0.7;
+}
+
+body.dark-mode .link:hover .share-btn:hover {
+    opacity: 1;
+}
+
+body.dark-mode .link:hover i,
+body.dark-mode .link:hover span {
+    color: var(--color-primary);
 }
 
 /* Toast Notification */

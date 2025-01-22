@@ -1,17 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check system dark mode preference and set initial state
-    const darkModeButton = document.querySelector('.js-night-mode');
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mostrar(darkModeButton);
-    }
-
-    // Add listener for system dark mode changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (e.matches !== document.body.classList.contains('dark-mode')) {
-            mostrar(darkModeButton);
-        }
-    });
-
     const userName = document.getElementById('userName');
     let mouseOverTimeout;
     
@@ -143,6 +130,19 @@ document.addEventListener('DOMContentLoaded', function() {
             checkAchievement('Night and Day');
         }
     }
+
+    // Check system dark mode preference and set initial state
+    const darkModeButton = document.querySelector('.js-night-mode');
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mostrar(darkModeButton);
+    }
+
+    // Add listener for system dark mode changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (e.matches !== document.body.classList.contains('dark-mode')) {
+            mostrar(darkModeButton);
+        }
+    });
 
     const userPhoto = document.getElementById('userPhoto');
     let clickCount = 0;
