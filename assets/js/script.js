@@ -293,8 +293,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    // Piano Mode Toggle
-    const pianeModeToggle = document.querySelector('.piano-mode-toggle');
+    // Piano Mode Constants and Setup
+    const NOTES = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5'];
+    const NOTE_FREQUENCIES = {
+        'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13, 'E4': 329.63,
+        'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00,
+        'A#4': 466.16, 'B4': 493.88, 'C5': 523.25
+    };
     let audioContext = null;
     let currentInstrument = 0;
     const instruments = [
@@ -345,44 +350,83 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Reset click counter when toggling piano mode
-    pianeModeToggle.addEventListener('click', () => {
-        clickCount = 0;  // Reset counter when switching modes
-        document.body.classList.toggle('piano-mode');
-        
-        // Reset any existing transform and transition when toggling piano mode
-        if (!document.body.classList.contains('piano-mode')) {
-            userPhoto.style.transform = '';
-            userPhoto.style.transition = '';
-            return;
-        }
-        
-        // Show initial instrument
-        showInstrumentIndicator();
-        
-        // Play a little piano scale when toggling on
-        const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C4 to C5
-        notes.forEach((note, index) => {
-            setTimeout(() => {
-                playNote(note, 0.5);
-                // Rotate profile picture clockwise for even indices, counter-clockwise for odd
-                userPhoto.style.transition = 'transform 0.2s ease';
-                userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
+    // Piano Mode Toggle
+    const pianoModeToggle = document.querySelector('.piano-mode-toggle');
+    if (pianoModeToggle) {
+        pianoModeToggle.addEventListener('click', () => {
+            clickCount = 0;  // Reset counter when switching modes
+            document.body.classList.toggle('piano-mode');
+            const userPhoto = document.getElementById('userPhoto');
+            
+            // Reset any existing transform and transition when toggling piano mode
+            if (!document.body.classList.contains('piano-mode')) {
+                userPhoto.style.transform = '';
+                userPhoto.style.transition = '';
+                return;
+            }
+            
+            // Show initial instrument
+            showInstrumentIndicator();
+            
+            // Assign notes to links if entering piano mode
+            const links = document.querySelectorAll('.link');
+            links.forEach((link, index) => {
+                const note = NOTES[index % NOTES.length];
+                link.setAttribute('data-note', note);
+                
+                // Add click handler for piano sounds
+                link.addEventListener('click', (e) => {
+                    if (document.body.classList.contains('piano-mode')) {
+                        e.preventDefault();
+                        const frequency = NOTE_FREQUENCIES[note];
+                        playNote(frequency);
+                        
+                        // Add a small delay before following the link
+                        setTimeout(() => {
+                            window.location.href = link.href;
+                        }, 200);
+                    }
+                });
+            });
+            
+            // Play a little piano scale when toggling on
+            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C4 to C5
+            notes.forEach((note, index) => {
                 setTimeout(() => {
-                    userPhoto.style.transform = 'rotate(0deg)';
-                }, 150);
-            }, index * 100);
+                    playNote(note, 0.5);
+                    // Rotate profile picture clockwise for even indices, counter-clockwise for odd
+                    userPhoto.style.transition = 'transform 0.2s ease';
+                    userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
+                    setTimeout(() => {
+                        userPhoto.style.transform = 'rotate(0deg)';
+                    }, 150);
+                }, index * 100);
+            });
         });
-    });
+    }
 
     // Add piano key sounds to links in piano mode
     document.querySelectorAll('.link').forEach((link, index) => {
         link.addEventListener('mouseenter', () => {
             if (document.body.classList.contains('piano-mode')) {
-                // Use pentatonic scale for a pleasant sound
-                const notes = [261.63, 293.66, 329.63, 392.00, 440.00];
-                const note = notes[index % notes.length];
-                playNote(note);
+                // Melody sequence from the sheet music
+                const melodicNotes = [
+                    NOTE_FREQUENCIES['F4'],  // First note
+                    NOTE_FREQUENCIES['A4'],  // Second note
+                    NOTE_FREQUENCIES['F4'],  // Third note
+                    NOTE_FREQUENCIES['A4'],  // Fourth note
+                    NOTE_FREQUENCIES['F4'],  // Fifth note
+                    NOTE_FREQUENCIES['A4'],  // Sixth note
+                    NOTE_FREQUENCIES['C5'],  // Seventh note
+                    NOTE_FREQUENCIES['A4'],  // Eighth note
+                    NOTE_FREQUENCIES['F4'],  // Ninth note
+                    NOTE_FREQUENCIES['A4'],  // Tenth note
+                    NOTE_FREQUENCIES['F4'],  // Eleventh note
+                    NOTE_FREQUENCIES['D4']   // Twelfth note
+                ];
+                
+                const note = melodicNotes[index % melodicNotes.length];
+                playNote(note, 0.2); // Shortened duration for quicker response
                 
                 // Rotate profile picture with each note
                 const userPhoto = document.getElementById('userPhoto');
