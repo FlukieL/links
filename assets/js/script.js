@@ -447,24 +447,54 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             });
-            
-            // Play a random melody when toggling on
-            const allNotes = Object.values(NOTE_FREQUENCIES);
-            const melodyLength = 8;
-            const randomMelody = Array.from({ length: melodyLength }, () => 
-                allNotes[Math.floor(Math.random() * allNotes.length)]
-            );
 
-            randomMelody.forEach((note, index) => {
+            // Predefined melodic patterns from sheet music
+            const melodies = [
+                // 6/8 Pattern
+                [
+                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['G4'], duration: 0.4 },
+                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['G4'], duration: 0.4 }
+                ],
+                // 3/4 Pattern
+                [
+                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['E4'], duration: 0.6 },
+                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['E4'], duration: 0.6 }
+                ],
+                // Long notes pattern
+                [
+                    { note: NOTE_FREQUENCIES['G4'], duration: 0.6 },
+                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['G4'], duration: 0.6 },
+                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
+                    { note: NOTE_FREQUENCIES['G4'], duration: 0.6 },
+                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 }
+                ]
+            ];
+
+            // Randomly select and combine two patterns
+            const pattern1 = melodies[Math.floor(Math.random() * melodies.length)];
+            const pattern2 = melodies[Math.floor(Math.random() * melodies.length)];
+            const combinedMelody = [...pattern1, ...pattern2];
+            
+            // Play the combined melody
+            let timeOffset = 0;
+            combinedMelody.forEach((note, index) => {
                 setTimeout(() => {
-                    playNote(note, 0.2);
+                    playNote(note.note, note.duration);
                     // Rotate profile picture clockwise for even indices, counter-clockwise for odd
                     userPhoto.style.transition = 'transform 0.2s ease';
                     userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
                     setTimeout(() => {
                         userPhoto.style.transform = 'rotate(0deg)';
                     }, 150);
-                }, index * 120);
+                }, timeOffset);
+                timeOffset += note.duration * 1000; // Convert duration to milliseconds
             });
         });
     }
