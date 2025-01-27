@@ -448,43 +448,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // Predefined melodic patterns from sheet music
-            const melodies = [
-                // 6/8 Pattern
-                [
-                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['G4'], duration: 0.4 },
-                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['G4'], duration: 0.4 }
-                ],
-                // 3/4 Pattern
-                [
-                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['E4'], duration: 0.6 },
-                    { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['E4'], duration: 0.6 }
-                ],
-                // Long notes pattern
-                [
-                    { note: NOTE_FREQUENCIES['G4'], duration: 0.6 },
-                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['G4'], duration: 0.6 },
-                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
-                    { note: NOTE_FREQUENCIES['G4'], duration: 0.6 },
-                    { note: NOTE_FREQUENCIES['E4'], duration: 0.2 }
-                ]
+            // Piano mode activation melody: C-G-E-C-A-F#
+            const activationMelody = [
+                { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
+                { note: NOTE_FREQUENCIES['G4'], duration: 0.2 },
+                { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
+                { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
+                { note: NOTE_FREQUENCIES['A4'], duration: 0.2 },
+                { note: NOTE_FREQUENCIES['F#4'], duration: 0.4 }
             ];
-
-            // Randomly select and combine two patterns
-            const pattern1 = melodies[Math.floor(Math.random() * melodies.length)];
-            const pattern2 = melodies[Math.floor(Math.random() * melodies.length)];
-            const combinedMelody = [...pattern1, ...pattern2];
             
-            // Play the combined melody
+            // Play the activation melody
             let timeOffset = 0;
-            combinedMelody.forEach((note, index) => {
+            activationMelody.forEach((note, index) => {
                 setTimeout(() => {
                     playNote(note.note, note.duration);
                     // Rotate profile picture clockwise for even indices, counter-clockwise for odd
