@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Add staggered animation to links
+    const links = document.querySelectorAll('.link');
+    links.forEach((link, index) => {
+        link.style.animationDelay = `${index * 0.1}s`;
+    });
+
     const userName = document.getElementById('userName');
     let mouseOverTimeout;
     
