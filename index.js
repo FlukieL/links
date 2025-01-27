@@ -58,6 +58,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('ServiceWorker registration failed: ', err);
             });
     }
+
+    // Add sequential intro animations
+    const links = document.querySelectorAll('.link');
+    links.forEach((link, index) => {
+        link.style.setProperty('--delay', `${index * 100}ms`);
+        link.classList.add('intro-animation');
+    });
+
+    // Add this new code
+    const headerButtons = document.querySelectorAll('.links-header button');
+    headerButtons.forEach((button, index) => {
+        button.style.animation = `buttonEntrance 0.5s ease-out ${index * 150 + 300}ms forwards`;
+        button.style.opacity = '0';
+    });
 });
 
 function toggleAchievements(header) {

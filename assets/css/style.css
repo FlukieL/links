@@ -773,3 +773,21 @@ body.dark-mode .link:hover span {
         gap: var(--space-xs);
     }
 }
+
+/* Add these new keyframes */
+@keyframes buttonEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) rotateX(-90deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+    }
+}
+
+/* Add intro animation class */
+.link.intro-animation {
+    animation: buttonEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
