@@ -327,12 +327,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let audioContext = null;
     let currentInstrument = 0;
+    let isSustainEnabled = false;
     const instruments = [
         { type: 'sine', name: 'Piano' },
         { type: 'square', name: 'Synth' },
         { type: 'triangle', name: 'Music Box' },
         { type: 'sawtooth', name: 'Electric Guitar' }
     ];
+
+    // Function to update sustain state and UI
+    function updateSustainState(enabled) {
+        isSustainEnabled = enabled;
+        const sustainToggle = document.querySelector('.sustain-toggle');
+        if (sustainToggle) {
+            if (enabled) {
+                sustainToggle.classList.add('active');
+            } else {
+                sustainToggle.classList.remove('active');
+            }
+        }
+    }
+
+    // Add sustain toggle handler
+    const sustainToggle = document.querySelector('.sustain-toggle');
+    if (sustainToggle) {
+        sustainToggle.addEventListener('click', () => {
+            updateSustainState(!isSustainEnabled);
+            showToast(`Sustain ${isSustainEnabled ? 'enabled' : 'disabled'}`);
+        });
+    }
 
     function createAudioContext() {
         if (!audioContext) {
@@ -353,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => indicator.classList.remove('show'), 2000);
     }
 
-    function playNote(frequency, duration = 0.2) {
+    function playNote(frequency, duration = 0.4) {
         try {
             const ctx = createAudioContext();
             const oscillator = ctx.createOscillator();
@@ -366,10 +389,19 @@ document.addEventListener('DOMContentLoaded', function() {
             oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
             
             gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+            // Adjust release based on sustain
+            const releaseDuration = isSustainEnabled ? 2.0 : duration;
+            const releaseStart = ctx.currentTime + (isSustainEnabled ? duration * 2 : duration);
+            
+            // Smoother attack
+            gainNode.gain.setTargetAtTime(0.3, ctx.currentTime, 0.01);
+            
+            // Longer, smoother release when sustain is enabled
+            gainNode.gain.setTargetAtTime(0.01, releaseStart, releaseDuration * 0.3);
             
             oscillator.start(ctx.currentTime);
-            oscillator.stop(ctx.currentTime + duration);
+            oscillator.stop(ctx.currentTime + duration + releaseDuration);
         } catch (error) {
             console.error('Error playing note:', error);
         }
@@ -387,6 +419,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!document.body.classList.contains('piano-mode')) {
                 userPhoto.style.transform = '';
                 userPhoto.style.transition = '';
+                // Reset sustain when exiting piano mode
+                updateSustainState(false);
                 return;
             }
             

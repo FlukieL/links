@@ -552,9 +552,62 @@ body.dark-mode #achievementPopup {
     transition: color var(--transition-fast);
 }
 
-.piano-mode-toggle:hover,
+.piano-mode-toggle:hover {
+    color: var(--color-text);
+    opacity: 0.7;
+}
+
 body.piano-mode .piano-mode-toggle {
     color: var(--color-primary);
+    opacity: 1;
+}
+
+body.piano-mode .piano-mode-toggle:hover {
+    color: var(--color-primary);
+    opacity: 0.8;
+}
+
+.sustain-toggle {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    padding: var(--space-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    opacity: 0;
+    transform: translateX(-10px);
+    pointer-events: none;
+    visibility: hidden;
+    display: none;
+}
+
+body.piano-mode .sustain-toggle {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    visibility: visible;
+    display: inline-flex;
+}
+
+.sustain-toggle:hover {
+    color: var(--color-text);
+    opacity: 0.7;
+}
+
+.sustain-toggle.active,
+.sustain-toggle.active:hover {
+    color: var(--color-primary);
+    opacity: 1;
+}
+
+.sustain-toggle.active {
+    text-shadow: 0 0 10px var(--color-primary);
+    animation: sustainPulse 2s ease-in-out infinite;
+}
+
+@keyframes sustainPulse {
+    0%, 100% { text-shadow: 0 0 10px var(--color-primary); }
+    50% { text-shadow: 0 0 20px var(--color-primary), 0 0 30px var(--color-primary); }
 }
 
 /* Piano mode styles */
@@ -770,6 +823,16 @@ body.dark-mode .link:hover span {
 
     .links-grid.list-view .link {
         width: 100%;
+    }
+
+    .links-header {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .sustain-toggle {
+        position: static;
+        margin-left: 0;
     }
 }
 
