@@ -448,18 +448,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             
-            // Play a little piano scale when toggling on
-            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C4 to C5
-            notes.forEach((note, index) => {
+            // Play a random melody when toggling on
+            const allNotes = Object.values(NOTE_FREQUENCIES);
+            const melodyLength = 8;
+            const randomMelody = Array.from({ length: melodyLength }, () => 
+                allNotes[Math.floor(Math.random() * allNotes.length)]
+            );
+
+            randomMelody.forEach((note, index) => {
                 setTimeout(() => {
-                    playNote(note, 0.5);
+                    playNote(note, 0.2);
                     // Rotate profile picture clockwise for even indices, counter-clockwise for odd
                     userPhoto.style.transition = 'transform 0.2s ease';
                     userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
                     setTimeout(() => {
                         userPhoto.style.transform = 'rotate(0deg)';
                     }, 150);
-                }, index * 100);
+                }, index * 120);
             });
         });
     }
