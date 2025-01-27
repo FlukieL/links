@@ -88,6 +88,36 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Night mode melody function
+    function playNightModeMelody() {
+        if (!document.body.classList.contains('piano-mode')) return;
+        
+        const melody = [
+            { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },  // eighth note
+            { note: NOTE_FREQUENCIES['E4'], duration: 0.4 },  // dotted quarter note
+            { note: 0, duration: 0.1 },                       // rest
+            { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },  // eighth note
+            { note: NOTE_FREQUENCIES['E4'], duration: 0.4 },  // dotted quarter note
+            { note: 0, duration: 0.1 },                       // rest
+            { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },  // ascending run
+            { note: NOTE_FREQUENCIES['F4'], duration: 0.2 },
+            { note: NOTE_FREQUENCIES['G4'], duration: 0.2 },
+            { note: NOTE_FREQUENCIES['A4'], duration: 0.2 },
+            { note: NOTE_FREQUENCIES['B4'], duration: 0.4 },  // half note
+            { note: NOTE_FREQUENCIES['C5'], duration: 0.8 }   // whole note
+        ];
+
+        let timeOffset = 0;
+        melody.forEach((note) => {
+            if (note.note !== 0) {  // Skip rests
+                setTimeout(() => {
+                    playNote(note.note, note.duration);
+                }, timeOffset * 1000);
+            }
+            timeOffset += note.duration;
+        });
+    }
+
     window.mostrar = function(e) {
         const userPhoto = document.getElementById('userPhoto');
         let currentGreyscale = parseFloat(userPhoto.style.filter.match(/grayscale\((\d+)%\)/)?.[1] || 0);
@@ -99,6 +129,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.background = 'rgb(10, 10, 10)';
             document.body.classList.add('dark-mode');
             document.querySelector('#userName').style.color = '#fff';
+
+            // Play the night mode melody if piano mode is active
+            playNightModeMelody();
 
             let links = document.querySelectorAll('.link');
             for (let i = 0; i < links.length; i++) {
