@@ -565,8 +565,19 @@ body.piano-mode .link {
     border-radius: 0 0 5px 5px;
     margin-bottom: var(--space-lg);
     position: relative;
-    transition: all 0.1s ease;
+    transition: all 0.15s ease-out;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+body.piano-mode .link:active,
+body.piano-mode .link.touched {
+    transform: translateY(4px) scale(0.98);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-primary-light);
 }
 
 body.piano-mode .link::before {
@@ -581,16 +592,15 @@ body.piano-mode .link::before {
     border-radius: 10px;
     font-size: 0.8rem;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
 }
 
-body.piano-mode .link:hover::before {
+body.piano-mode .link:hover::before,
+body.piano-mode .link:active::before,
+body.piano-mode .link.touched::before {
     opacity: 1;
-}
-
-body.piano-mode .link:active {
-    transform: translateY(4px);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%) translateY(-5px);
 }
 
 /* Black keys styling */
@@ -603,7 +613,9 @@ body.piano-mode .link[data-note*="#"] {
     width: 60%;
 }
 
-body.piano-mode .link[data-note*="#"]:hover {
+body.piano-mode .link[data-note*="#"]:hover,
+body.piano-mode .link[data-note*="#"]:active,
+body.piano-mode .link[data-note*="#"].touched {
     background-color: var(--color-icon-text);
 }
 
@@ -616,6 +628,7 @@ body.piano-mode .link:not([data-note*="#"]):hover {
 body.piano-mode #links {
     position: relative;
     padding-top: 30px;
+    touch-action: none;
 }
 
 body.piano-mode .link-container {

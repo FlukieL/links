@@ -430,82 +430,52 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add piano key sounds to links in piano mode
+    // Add touch tracking variables
+    let lastTouchedLink = null;
+    let isGliding = false;
+
+    // Function to get link element from touch position
+    function getLinkFromTouch(touch) {
+        const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
+        return elements.find(el => el.classList.contains('link'));
+    }
+
+    // Function to handle link touch/glide
+    function handleLinkTouch(link) {
+        if (!link || link === lastTouchedLink) return;
+        
+        lastTouchedLink = link;
+        const melodicNotes = [
+            NOTE_FREQUENCIES['F4'],
+            NOTE_FREQUENCIES['A4'],
+            NOTE_FREQUENCIES['F4'],
+            NOTE_FREQUENCIES['A4'],
+            NOTE_FREQUENCIES['F4'],
+            NOTE_FREQUENCIES['A4'],
+            NOTE_FREQUENCIES['C5'],
+            NOTE_FREQUENCIES['A4'],
+            NOTE_FREQUENCIES['F4'],
+            NOTE_FREQUENCIES['A4'],
+            NOTE_FREQUENCIES['F4'],
+            NOTE_FREQUENCIES['D4']
+        ];
+        
+        const index = Array.from(document.querySelectorAll('.link')).indexOf(link);
+        const note = melodicNotes[index % melodicNotes.length];
+        playNote(note, 0.2);
+        
+        // Visual feedback
+        link.style.transform = 'scale(1.05)';
+        link.style.opacity = '0.8';
+        
+        setTimeout(() => {
+            link.style.transform = '';
+            link.style.opacity = '';
+        }, 200);
+    }
+
+    // Add touch event handlers to links
     document.querySelectorAll('.link').forEach((link, index) => {
-        // Add tap counter for each link
-        let tapCount = 0;
-        const TAPS_TO_FOLLOW = 100;
-
-        // Touch event handler for mobile devices
-        link.addEventListener('touchstart', (e) => {
-            if (document.body.classList.contains('piano-mode')) {
-                e.preventDefault(); // Prevent default touch behavior
-                e.stopPropagation(); // Stop event bubbling
-                
-                const melodicNotes = [
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['C5'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['D4']
-                ];
-                
-                const note = melodicNotes[index % melodicNotes.length];
-                playNote(note, 0.2);
-                
-                // Increment tap count
-                tapCount++;
-                
-                // Add visual feedback for touch
-                link.style.transform = 'scale(1.05)';
-                link.style.opacity = '0.8';
-                
-                // Show progress towards link activation
-                if (tapCount < TAPS_TO_FOLLOW) {
-                    showToast(`Tap ${TAPS_TO_FOLLOW - tapCount} more times to follow link`);
-                }
-                
-                // Reset visual feedback and check tap count
-                setTimeout(() => {
-                    link.style.transform = '';
-                    link.style.opacity = '';
-                    
-                    // Follow link if tap count reached
-                    if (tapCount >= TAPS_TO_FOLLOW) {
-                        tapCount = 0; // Reset counter
-                        showToast('Following link...');
-                        setTimeout(() => {
-                            window.location.href = link.href;
-                        }, 500);
-                    }
-                }, 300);
-                
-                // Rotate profile picture with each note
-                const userPhoto = document.getElementById('userPhoto');
-                if (userPhoto.style.transition !== 'transform 0.2s ease') {
-                    userPhoto.style.transition = 'transform 0.2s ease';
-                }
-                userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
-                setTimeout(() => {
-                    if (document.body.classList.contains('piano-mode')) {
-                        userPhoto.style.transform = 'rotate(0deg)';
-                    }
-                }, 150);
-            }
-        });
-
-        // Reset tap counter when leaving piano mode
-        document.querySelector('.piano-mode-toggle').addEventListener('click', () => {
-            tapCount = 0;
-        });
-
         // Keep existing mouseenter event for desktop
         link.addEventListener('mouseenter', () => {
             if (document.body.classList.contains('piano-mode')) {
@@ -527,19 +497,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 const note = melodicNotes[index % melodicNotes.length];
                 playNote(note, 0.2);
                 
-                const userPhoto = document.getElementById('userPhoto');
-                if (userPhoto.style.transition !== 'transform 0.2s ease') {
-                    userPhoto.style.transition = 'transform 0.2s ease';
-                }
-                userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
+                // Visual feedback
+                link.style.transform = 'scale(1.05)';
+                link.style.opacity = '0.8';
+                
                 setTimeout(() => {
                     if (document.body.classList.contains('piano-mode')) {
-                        userPhoto.style.transform = 'rotate(0deg)';
+                        link.style.transform = '';
+                        link.style.opacity = '';
                     }
-                }, 150);
+                }, 200);
+            }
+        });
+
+        // Touch event handlers
+        link.addEventListener('touchstart', (e) => {
+            if (document.body.classList.contains('piano-mode')) {
+                e.preventDefault();
+                e.stopPropagation();
+                isGliding = true;
+                handleLinkTouch(link);
+            }
+        });
+
+        link.addEventListener('touchend', (e) => {
+            if (document.body.classList.contains('piano-mode')) {
+                e.preventDefault();
+                e.stopPropagation();
+                isGliding = false;
+                lastTouchedLink = null;
             }
         });
     });
+
+    // Add document-level touch move handler for gliding
+    document.addEventListener('touchmove', (e) => {
+        if (!document.body.classList.contains('piano-mode') || !isGliding) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const touch = e.touches[0];
+        const link = getLinkFromTouch(touch);
+        handleLinkTouch(link);
+    }, { passive: false });
 
     // Add keyboard support for piano mode
     document.addEventListener('keydown', (e) => {
