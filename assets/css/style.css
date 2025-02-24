@@ -522,27 +522,36 @@ body.dark-mode #achievementPopup {
 /* Links Header */
 .links-header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     margin-bottom: var(--space-md);
     padding: 0 var(--space-md);
     gap: var(--space-sm);
+    width: 100%;
+    text-align: center;
+    position: relative;
 }
 
-.view-toggle, .page-share {
+.view-toggle, .page-share, .piano-mode-toggle {
     background: none;
     border: none;
     color: var(--color-text);
     padding: var(--space-sm);
     cursor: pointer;
     transition: color var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
 }
 
-.view-toggle:hover, .page-share:hover {
+.view-toggle:hover, .page-share:hover, .piano-mode-toggle:hover {
     background: var(--color-primary-light);
     color: var(--color-primary);
 }
 
+/* Piano mode toggle with instrument indicator */
 .piano-mode-toggle {
     background: none;
     border: none;
@@ -550,6 +559,7 @@ body.dark-mode #achievementPopup {
     padding: var(--space-sm);
     cursor: pointer;
     transition: color var(--transition-fast);
+    position: relative;
 }
 
 .piano-mode-toggle:hover {
@@ -567,47 +577,146 @@ body.piano-mode .piano-mode-toggle:hover {
     opacity: 0.8;
 }
 
-.sustain-toggle {
-    background: none;
-    border: none;
-    color: var(--color-text);
-    padding: var(--space-sm);
-    cursor: pointer;
-    transition: all var(--transition-fast);
+/* Instrument indicator on the music icon */
+.piano-mode-toggle::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: transparent;
     opacity: 0;
-    transform: translateX(-10px);
-    pointer-events: none;
-    visibility: hidden;
-    display: none;
+    transition: all var(--transition-fast);
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
 }
 
-body.piano-mode .sustain-toggle {
+body.piano-mode .piano-mode-toggle::after {
     opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-    visibility: visible;
+    background-color: var(--color-primary);
+}
+
+/* Different colors for different instruments */
+body.piano-mode .piano-mode-toggle.instrument-0::after {
+    content: 'P';
+    background-color: #3498db;
+}
+
+body.piano-mode .piano-mode-toggle.instrument-1::after {
+    content: 'S';
+    background-color: #e74c3c;
+}
+
+body.piano-mode .piano-mode-toggle.instrument-2::after {
+    content: 'M';
+    background-color: #2ecc71;
+}
+
+body.piano-mode .piano-mode-toggle.instrument-3::after {
+    content: 'E';
+    background-color: #f39c12;
+}
+
+/* Updated sustain toggle for proper positioning in the header */
+.links-header .sustain-toggle {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    width: 0;
+    margin: 0;
 }
 
-.sustain-toggle:hover {
-    color: var(--color-text);
-    opacity: 0.7;
-}
-
-.sustain-toggle.active,
-.sustain-toggle.active:hover {
-    color: var(--color-primary);
+body.piano-mode .links-header .sustain-toggle {
+    display: inline-flex;
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    width: auto;
+    position: static;
 }
 
-.sustain-toggle.active {
-    text-shadow: 0 0 10px var(--color-primary);
-    animation: sustainPulse 2s ease-in-out infinite;
+/* Ensure sustain toggle is hidden when piano mode is disabled */
+body:not(.piano-mode) .links-header .sustain-toggle {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    margin: 0 !important;
+    position: absolute !important;
 }
 
+.links-header .sustain-toggle.active {
+    background-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(0, 140, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.links-header .sustain-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.links-header .sustain-toggle:active {
+    transform: scale(0.95);
+    background-color: var(--color-primary);
+    box-shadow: 0 0 15px rgba(0, 140, 255, 0.6);
+}
+
+/* Add pulsating animation for active sustain */
 @keyframes sustainPulse {
-    0%, 100% { text-shadow: 0 0 10px var(--color-primary); }
-    50% { text-shadow: 0 0 20px var(--color-primary), 0 0 30px var(--color-primary); }
+    0%, 100% { box-shadow: 0 0 10px rgba(0, 140, 255, 0.4); }
+    50% { box-shadow: 0 0 15px rgba(0, 140, 255, 0.7); }
+}
+
+.links-header .sustain-toggle.active {
+    animation: sustainPulse 1.5s ease-in-out infinite;
+}
+
+/* Show toast for sustain toggle */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-primary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    font-family: var(--font-primary);
+    font-weight: 500;
+}
+
+.toast.show {
+    opacity: 1;
 }
 
 /* Piano mode styles */
@@ -757,29 +866,6 @@ body.dark-mode .link:hover span {
     color: var(--color-primary);
 }
 
-/* Toast Notification */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background-color: var(--color-primary);
-    color: var(--color-white);
-    padding: 12px 24px;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-primary);
-    font-size: 0.9rem;
-    opacity: 0;
-    transition: all var(--transition-fast);
-    z-index: 1000;
-    box-shadow: var(--shadow-popup);
-}
-
-.toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-}
-
 /* Container width constraints */
 #links, #userName, #achievementsSection {
     width: 100%;
@@ -879,4 +965,17 @@ body.dark-mode .link:hover span {
 .link.intro-animation {
     animation: buttonEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     opacity: 0;
+}
+
+/* Wobble animation for profile picture */
+@keyframes wobble {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.wobble-animation {
+    animation: wobble 0.4s ease-in-out;
 }

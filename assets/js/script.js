@@ -93,25 +93,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!document.body.classList.contains('piano-mode')) return;
         
         const melody = [
-            { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },  // eighth note
-            { note: NOTE_FREQUENCIES['E4'], duration: 0.4 },  // dotted quarter note
-            { note: 0, duration: 0.1 },                       // rest
-            { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },  // eighth note
-            { note: NOTE_FREQUENCIES['E4'], duration: 0.4 },  // dotted quarter note
-            { note: 0, duration: 0.1 },                       // rest
-            { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },  // ascending run
-            { note: NOTE_FREQUENCIES['F4'], duration: 0.2 },
-            { note: NOTE_FREQUENCIES['G4'], duration: 0.2 },
-            { note: NOTE_FREQUENCIES['A4'], duration: 0.2 },
-            { note: NOTE_FREQUENCIES['B4'], duration: 0.4 },  // half note
-            { note: NOTE_FREQUENCIES['C5'], duration: 0.8 }   // whole note
+            { note: 'C4', duration: 0.2 },  // eighth note
+            { note: 'E4', duration: 0.4 },  // dotted quarter note
+            { note: null, duration: 0.1 },  // rest
+            { note: 'C4', duration: 0.2 },  // eighth note
+            { note: 'E4', duration: 0.4 },  // dotted quarter note
+            { note: null, duration: 0.1 },  // rest
+            { note: 'E4', duration: 0.2 },  // ascending run
+            { note: 'F4', duration: 0.2 },
+            { note: 'G4', duration: 0.2 },
+            { note: 'A4', duration: 0.2 },
+            { note: 'B4', duration: 0.4 },  // half note
+            { note: 'C5', duration: 0.8 }   // whole note
         ];
 
         let timeOffset = 0;
         melody.forEach((note) => {
-            if (note.note !== 0) {  // Skip rests
+            if (note.note !== null) {  // Skip rests
                 setTimeout(() => {
-                    playNote(note.note, note.duration);
+                    playPianoNote(note.note);
                 }, timeOffset * 1000);
             }
             timeOffset += note.duration;
@@ -198,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (document.body.classList.contains('piano-mode')) {
             // Handle instrument switching
             currentInstrument = (currentInstrument + 1) % instruments.length;
+            window.currentInstrument = currentInstrument; // Update global variable
             clickCount = 0; // Reset counter when instrument changes
             
             // Remove any previous instrument change animation
@@ -212,7 +213,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show instrument name and play demo note
             showInstrumentIndicator();
-            playNote(440, 0.5);
+            playPianoNote('A4', 0.7);
+            
+            // Update the visual indicator on the music icon
+            updateInstrumentIndicator();
         } else {
             // Handle normal mode clicks
             clickCount++;
@@ -367,27 +371,86 @@ document.addEventListener('DOMContentLoaded', function() {
         { type: 'triangle', name: 'Music Box' },
         { type: 'sawtooth', name: 'Electric Guitar' }
     ];
+    
+    // Make currentInstrument accessible globally
+    window.currentInstrument = currentInstrument;
 
-    // Function to update sustain state and UI
-    function updateSustainState(enabled) {
-        isSustainEnabled = enabled;
+    // Function to update sustain state
+    function updateSustainState(isEnabled) {
+        // Update local variable
+        isSustainEnabled = isEnabled;
+        
+        // Update global sustain state for piano.js
+        window.sustainEnabled = isEnabled;
+        
+        // Update the sustain toggle button appearance
         const sustainToggle = document.querySelector('.sustain-toggle');
         if (sustainToggle) {
-            if (enabled) {
+            if (isEnabled) {
                 sustainToggle.classList.add('active');
+                if (window.sustainToastEnabled) {
+                    showToast('Sustain on');
+                }
             } else {
                 sustainToggle.classList.remove('active');
+                if (window.sustainToastEnabled) {
+                    showToast('Sustain off');
+                }
             }
+        }
+        
+        // Call the piano.js function to handle sustain changes
+        if (typeof updateSustain === 'function') {
+            updateSustain(isEnabled);
         }
     }
 
-    // Add sustain toggle handler
+    // Get the existing sustain toggle button
     const sustainToggle = document.querySelector('.sustain-toggle');
     if (sustainToggle) {
-        sustainToggle.addEventListener('click', () => {
-            updateSustainState(!isSustainEnabled);
-            showToast(`Sustain ${isSustainEnabled ? 'enabled' : 'disabled'}`);
+        // Replace click handler with mousedown/touchstart handlers
+        sustainToggle.removeEventListener('click', function(){});
+        
+        // Use mousedown/touchstart to activate sustain when pressed
+        sustainToggle.addEventListener('mousedown', function(e) {
+            e.preventDefault(); // Prevent text selection
+            window.sustainToastEnabled = true;
+            updateSustainState(true);
         });
+        
+        sustainToggle.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // Prevent text selection
+            window.sustainToastEnabled = true;
+            updateSustainState(true);
+        });
+        
+        // Use mouseup/touchend to deactivate sustain when released
+        document.addEventListener('mouseup', function() {
+            if (isSustainEnabled) {
+                window.sustainToastEnabled = true;
+                updateSustainState(false);
+            }
+        });
+        
+        document.addEventListener('touchend', function() {
+            if (isSustainEnabled) {
+                window.sustainToastEnabled = true;
+                updateSustainState(false);
+            }
+        });
+        
+        // Also handle mouse leaving the window
+        document.addEventListener('mouseleave', function() {
+            if (isSustainEnabled) {
+                window.sustainToastEnabled = false; // Don't show toast when mouse leaves
+                updateSustainState(false);
+            }
+        });
+        
+        // Initially hide the sustain button
+        sustainToggle.style.opacity = '0';
+        sustainToggle.style.visibility = 'hidden';
+        sustainToggle.style.pointerEvents = 'none';
     }
 
     function createAudioContext() {
@@ -395,6 +458,45 @@ document.addEventListener('DOMContentLoaded', function() {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
         return audioContext;
+    }
+
+    // Function to update instrument indicator
+    function updateInstrumentIndicator() {
+        const pianoModeToggle = document.querySelector('.piano-mode-toggle');
+        if (!pianoModeToggle) return;
+        
+        // Remove all instrument classes
+        for (let i = 0; i < instruments.length; i++) {
+            pianoModeToggle.classList.remove(`instrument-${i}`);
+        }
+        
+        // Add current instrument class
+        pianoModeToggle.classList.add(`instrument-${currentInstrument}`);
+        
+        // Show/hide sustain toggle based on instrument type
+        const sustainToggle = document.querySelector('.sustain-toggle');
+        if (sustainToggle) {
+            // Only show sustain if in piano mode AND using non-piano instruments
+            if (document.body.classList.contains('piano-mode') && currentInstrument > 0) {
+                // Only show sustain for WebAudio instruments (not piano)
+                sustainToggle.style.opacity = '1';
+                sustainToggle.style.visibility = 'visible';
+                sustainToggle.style.pointerEvents = 'auto';
+                sustainToggle.style.width = 'auto';
+                sustainToggle.style.position = 'static';
+                sustainToggle.style.margin = '';
+            } else {
+                // Hide for piano samples or when not in piano mode
+                sustainToggle.style.opacity = '0';
+                sustainToggle.style.visibility = 'hidden';
+                sustainToggle.style.pointerEvents = 'none';
+                sustainToggle.style.width = '0';
+                sustainToggle.style.margin = '0';
+                sustainToggle.style.position = 'absolute';
+                // Also disable sustain when switching to piano
+                updateSustainState(false);
+            }
+        }
     }
 
     function showInstrumentIndicator() {
@@ -406,11 +508,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         indicator.textContent = instruments[currentInstrument].name;
         indicator.classList.add('show');
+        
+        // Update the visual indicator on the music icon
+        updateInstrumentIndicator();
+        
         setTimeout(() => indicator.classList.remove('show'), 2000);
     }
 
     function playNote(frequency, duration = 0.4) {
         try {
+            // If we're in piano mode, use the piano samples instead of oscillator
+            if (document.body.classList.contains('piano-mode')) {
+                // Convert frequency to note name
+                const noteEntries = Object.entries(NOTE_FREQUENCIES);
+                const closestNote = noteEntries.reduce((prev, curr) => {
+                    return Math.abs(curr[1] - frequency) < Math.abs(prev[1] - frequency) ? curr : prev;
+                });
+                
+                // Play the piano note
+                return playPianoNote(closestNote[0]);
+            }
+            
+            // Original oscillator code for non-piano mode
             const ctx = createAudioContext();
             const oscillator = ctx.createOscillator();
             const gainNode = ctx.createGain();
@@ -452,26 +571,49 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!document.body.classList.contains('piano-mode')) {
                 userPhoto.style.transform = '';
                 userPhoto.style.transition = '';
+                // Disable toast notifications for this sustain change
+                window.sustainToastEnabled = false;
                 // Reset sustain when exiting piano mode
                 updateSustainState(false);
+                // Reset instrument indicator
+                pianoModeToggle.classList.remove(`instrument-${currentInstrument}`);
+                
+                // Ensure sustain toggle is completely hidden when exiting piano mode
+                const sustainToggle = document.querySelector('.sustain-toggle');
+                if (sustainToggle) {
+                    sustainToggle.style.opacity = '0';
+                    sustainToggle.style.visibility = 'hidden';
+                    sustainToggle.style.pointerEvents = 'none';
+                    sustainToggle.style.width = '0';
+                    sustainToggle.style.margin = '0';
+                    sustainToggle.style.position = 'absolute';
+                }
                 return;
             }
+            
+            // Reset to first instrument when entering piano mode
+            currentInstrument = 0;
+            window.currentInstrument = 0; // Update global variable
             
             // Show initial instrument
             showInstrumentIndicator();
             
-            // Assign notes to links if entering piano mode
+            // Update instrument indicator to hide sustain for piano
+            updateInstrumentIndicator();
+            
+            // Assign notes to links if entering piano mode - include sharp notes for black keys
             const links = document.querySelectorAll('.link');
+            const notePattern = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5'];
+            
             links.forEach((link, index) => {
-                const note = NOTES[index % NOTES.length];
+                const note = notePattern[index % notePattern.length];
                 link.setAttribute('data-note', note);
                 
                 // Add click handler for piano sounds
                 link.addEventListener('click', (e) => {
                     if (document.body.classList.contains('piano-mode')) {
                         e.preventDefault();
-                        const frequency = NOTE_FREQUENCIES[note];
-                        playNote(frequency);
+                        playPianoNote(note);
                         
                         // Add a small delay before following the link
                         setTimeout(() => {
@@ -481,27 +623,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // Piano mode activation melody: C-G-E-C-A-F#
+            // Piano mode activation melody: C-E-G-C
             const activationMelody = [
-                { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
-                { note: NOTE_FREQUENCIES['G4'], duration: 0.2 },
-                { note: NOTE_FREQUENCIES['E4'], duration: 0.2 },
-                { note: NOTE_FREQUENCIES['C4'], duration: 0.2 },
-                { note: NOTE_FREQUENCIES['A4'], duration: 0.2 },
-                { note: NOTE_FREQUENCIES['F#4'], duration: 0.4 }
+                { note: 'C4', duration: 0.2 },
+                { note: 'E4', duration: 0.2 },
+                { note: 'G4', duration: 0.2 },
+                { note: 'C5', duration: 0.4 }
             ];
             
             // Play the activation melody
             let timeOffset = 0;
-            activationMelody.forEach((note, index) => {
+            activationMelody.forEach((note) => {
                 setTimeout(() => {
-                    playNote(note.note, note.duration);
-                    // Rotate profile picture clockwise for even indices, counter-clockwise for odd
-                    userPhoto.style.transition = 'transform 0.2s ease';
-                    userPhoto.style.transform = `rotate(${index % 2 === 0 ? 15 : -15}deg)`;
-                    setTimeout(() => {
-                        userPhoto.style.transform = 'rotate(0deg)';
-                    }, 150);
+                    playPianoNote(note.note);
                 }, timeOffset);
                 timeOffset += note.duration * 1000; // Convert duration to milliseconds
             });
@@ -523,33 +657,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!link || link === lastTouchedLink) return;
         
         lastTouchedLink = link;
-        const melodicNotes = [
-            NOTE_FREQUENCIES['F4'],
-            NOTE_FREQUENCIES['A4'],
-            NOTE_FREQUENCIES['F4'],
-            NOTE_FREQUENCIES['A4'],
-            NOTE_FREQUENCIES['F4'],
-            NOTE_FREQUENCIES['A4'],
-            NOTE_FREQUENCIES['C5'],
-            NOTE_FREQUENCIES['A4'],
-            NOTE_FREQUENCIES['F4'],
-            NOTE_FREQUENCIES['A4'],
-            NOTE_FREQUENCIES['F4'],
-            NOTE_FREQUENCIES['D4']
-        ];
         
-        const index = Array.from(document.querySelectorAll('.link')).indexOf(link);
-        const note = melodicNotes[index % melodicNotes.length];
-        playNote(note, 0.2);
-        
-        // Visual feedback
-        link.style.transform = 'scale(1.05)';
-        link.style.opacity = '0.8';
-        
-        setTimeout(() => {
-            link.style.transform = '';
-            link.style.opacity = '';
-        }, 200);
+        // Use the note assigned to the link
+        const note = link.getAttribute('data-note');
+        if (note) {
+            playPianoNote(note, 0.5);
+            
+            // Visual feedback
+            link.style.transform = 'scale(1.05)';
+            link.style.opacity = '0.8';
+            
+            setTimeout(() => {
+                link.style.transform = '';
+                link.style.opacity = '';
+            }, 200);
+        }
     }
 
     // Add touch event handlers to links
@@ -557,34 +679,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Keep existing mouseenter event for desktop
         link.addEventListener('mouseenter', () => {
             if (document.body.classList.contains('piano-mode')) {
-                const melodicNotes = [
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['C5'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['A4'],
-                    NOTE_FREQUENCIES['F4'],
-                    NOTE_FREQUENCIES['D4']
-                ];
-                
-                const note = melodicNotes[index % melodicNotes.length];
-                playNote(note, 0.2);
-                
-                // Visual feedback
-                link.style.transform = 'scale(1.05)';
-                link.style.opacity = '0.8';
-                
-                setTimeout(() => {
-                    if (document.body.classList.contains('piano-mode')) {
-                        link.style.transform = '';
-                        link.style.opacity = '';
-                    }
-                }, 200);
+                // Use the note assigned to the link
+                const note = link.getAttribute('data-note');
+                if (note) {
+                    playPianoNote(note, 0.5);
+                    
+                    // Visual feedback
+                    link.style.transform = 'scale(1.05)';
+                    link.style.opacity = '0.8';
+                    
+                    setTimeout(() => {
+                        if (document.body.classList.contains('piano-mode')) {
+                            link.style.transform = '';
+                            link.style.opacity = '';
+                        }
+                    }, 200);
+                }
             }
         });
 
@@ -637,8 +747,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (noteName) {
             // Play the note
-            const frequency = NOTE_FREQUENCIES[noteName];
-            playNote(frequency);
+            playPianoNote(noteName);
             
             // Highlight the corresponding link if it exists
             const links = document.querySelectorAll('.link');
@@ -666,4 +775,25 @@ window.resetAchievements = function() {
         document.getElementById('winner').style.display = 'none';
         document.querySelector('.reset-achievements').style.display = 'none';
     }
+}
+
+// Function to show toast notification
+function showToast(message, duration = 2000) {
+    // Check if toast element exists, create if not
+    let toast = document.querySelector('.toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    
+    // Set message and show toast
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    // Hide toast after duration
+    clearTimeout(window.toastTimeout);
+    window.toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, duration);
 }
