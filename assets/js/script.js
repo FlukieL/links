@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.style.color = "rgb(225, 225, 0)";
             document.body.style.background = 'rgb(10, 10, 10)';
             document.body.classList.add('dark-mode');
+            e.setAttribute('aria-pressed', 'true');
             document.querySelector('#userName').style.color = '#fff';
 
             // Play the night mode melody if piano mode is active
@@ -149,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.style.color = "#585858";
             document.body.style.background = 'rgb(243, 242, 242)';
             document.body.classList.remove('dark-mode');
+            e.setAttribute('aria-pressed', 'false');
             document.querySelector('#userName').style.color = 'rgb(99, 99, 99)';
 
             let links = document.querySelectorAll('.link');
@@ -263,12 +265,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 linksContainer.classList.remove('list-view');
                 viewToggle.querySelector('i').classList.remove('fa-list');
                 viewToggle.querySelector('i').classList.add('fa-grip-horizontal');
+                viewToggle.setAttribute('aria-pressed', 'true');
             } else {
                 linksContainer.classList.add('list-view');
                 viewToggle.querySelector('i').classList.remove('fa-grip-horizontal');
                 viewToggle.querySelector('i').classList.add('fa-list');
+                viewToggle.setAttribute('aria-pressed', 'false');
             }
         });
+        // Initialise aria state
+        viewToggle.setAttribute('aria-pressed', linksContainer.classList.contains('links-grid') ? 'true' : 'false');
     }
 
     // Share Functionality
@@ -277,7 +283,9 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             
-            const link = btn.closest('.link');
+            const wrapper = btn.closest('.link-item') || btn.parentElement;
+            const link = wrapper ? wrapper.querySelector('a.link') : null;
+            if (!link) return;
             const url = link.href;
             const title = link.querySelector('span').textContent;
 
@@ -388,11 +396,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (sustainToggle) {
             if (isEnabled) {
                 sustainToggle.classList.add('active');
+                sustainToggle.setAttribute('aria-pressed', 'true');
                 if (window.sustainToastEnabled) {
                     showToast('Sustain on');
                 }
             } else {
                 sustainToggle.classList.remove('active');
+                sustainToggle.setAttribute('aria-pressed', 'false');
                 if (window.sustainToastEnabled) {
                     showToast('Sustain off');
                 }
@@ -565,6 +575,7 @@ document.addEventListener('DOMContentLoaded', function() {
         pianoModeToggle.addEventListener('click', () => {
             clickCount = 0;  // Reset counter when switching modes
             document.body.classList.toggle('piano-mode');
+            pianoModeToggle.setAttribute('aria-pressed', document.body.classList.contains('piano-mode') ? 'true' : 'false');
             const userPhoto = document.getElementById('userPhoto');
             
             // Reset any existing transform and transition when toggling piano mode

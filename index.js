@@ -48,16 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update achievement visuals
     updateAchievements();
 
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    }
+    // Service worker is registered in index.html
 
     // Add sequential intro animations
     const links = document.querySelectorAll('.link');
@@ -75,9 +66,21 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function toggleAchievements(header) {
-    const content = header.nextElementSibling;
-    header.classList.toggle('expanded');
-    content.classList.toggle('expanded');
+    const content = document.getElementById('achievementsContent') || header.nextElementSibling;
+    const isExpanded = header.getAttribute('aria-expanded') === 'true';
+    const nextExpanded = !isExpanded;
+    header.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
+    if (content) {
+        if (nextExpanded) {
+            content.hidden = false;
+            content.classList.add('expanded');
+            header.classList.add('expanded');
+        } else {
+            content.classList.remove('expanded');
+            header.classList.remove('expanded');
+            content.hidden = true;
+        }
+    }
 }
 
 function updateAchievements() {

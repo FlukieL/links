@@ -129,6 +129,19 @@ body {
     align-items: center;
 }
 
+/* Container for a link and its sibling share button */
+.link-item {
+    position: relative;
+    width: 100%;
+    max-width: 675px;
+    margin-bottom: var(--space-lg);
+}
+
+/* Ensure the anchor fills its wrapper so buttons don’t shrink */
+.link-item .link {
+    width: 100%;
+}
+
 .link-container {
     display: flex;
     justify-content: center;
@@ -138,7 +151,7 @@ body {
 }
 
 /* Single link (not in container) */
-#links > .link {
+#links > .link-item {
     width: 100%;
     max-width: 675px;
 }
@@ -163,7 +176,7 @@ body {
     color: var(--color-white);
     font-family: var(--font-primary);
     text-align: center;
-    margin-bottom: var(--space-lg);
+    margin-bottom: 0;
     padding: 0 var(--space-xl);
     text-decoration: none;
     font-size: 1rem;
@@ -171,7 +184,7 @@ body {
     border-radius: var(--radius-md);
     transition: all var(--transition-fast);
     border: 2px solid var(--color-primary);
-    height: 56px;
+    min-height: 56px;
     box-sizing: border-box;
     line-height: 1;
     opacity: 0;
@@ -183,10 +196,11 @@ body {
     color: var(--color-primary);
 }
 
-.link-container .link {
-    width: calc(50% - var(--space-sm) / 2);
+.link-container .link-item {
+    width: calc(50% - (var(--space-sm) / 2));
     margin-bottom: 0;
 }
+.link-container .link-item .link { width: 100%; }
 
 .link-content {
     position: absolute;
@@ -236,7 +250,9 @@ body {
     justify-content: center;
 }
 
-.link:hover .share-btn {
+.link-item:hover .share-btn,
+.link:focus-within + .share-btn,
+.link:focus + .share-btn {
     opacity: 0.7;
 }
 
@@ -263,6 +279,20 @@ body {
 .footer i {
     font-size: 1.2em;
     line-height: 38px;
+}
+
+/* Skip link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 8px 12px;
+    z-index: 10000001;
+}
+.skip-link:focus {
+    top: 10px;
 }
 
 .circulo {
@@ -318,6 +348,9 @@ body {
     justify-content: center;
     gap: var(--space-sm);
     color: var(--color-text);
+    background: none;
+    border: none;
+    width: 100%;
 }
 
 .achievements-header h2 {
@@ -643,8 +676,8 @@ body.piano-mode .piano-mode-toggle.instrument-3::after {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     -webkit-touch-callout: none;
     width: 0;
     margin: 0;
@@ -730,8 +763,8 @@ body.piano-mode .link {
     transition: all 0.15s ease-out;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     touch-action: none;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     -webkit-touch-callout: none;
 }
 
@@ -817,6 +850,7 @@ body.piano-mode .link-container {
     display: contents;
 }
 
+.links-grid .link-item,
 .links-grid .link {
     width: 100%;
     margin-bottom: 0;
@@ -832,9 +866,8 @@ body.piano-mode .link-container {
     display: flex;
 }
 
-.links-grid.list-view .link {
-    width: 675px;
-}
+.links-grid.list-view .link-item,
+.links-grid.list-view .link { width: 675px; }
 
 /* Dark Mode Improvements */
 body.dark-mode {
