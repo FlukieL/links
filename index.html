@@ -7,224 +7,184 @@
     <meta name="description" content="Luke Harper's Social Links"/>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="assets/imagens/icon-192x192.png">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="fa6.6/css/all.css">
     <link rel="icon" href="assets/imagens/favicon.ico" type="image/x-icon" />
-    <link rel="canonical" href="https://links.lukeharper.co.uk/">
-    <meta name="theme-color" content="#426EFF">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Open Graph / Twitter -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Luke Harper - Links">
-    <meta property="og:description" content="Luke Harper's Social Links">
-    <meta property="og:image" content="/assets/imagens/profile.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Luke Harper - Links">
-    <meta name="twitter:description" content="Luke Harper's Social Links">
-    <meta name="twitter:image" content="/assets/imagens/profile.jpg">
 </head>
 
 <body>
-    <button class="fas fa-moon fa-2x night_mode js-night-mode" aria-label="Toggle dark mode" title="Toggle dark mode" aria-pressed="false"></button>
+    <button class="fas fa-moon fa-2x night_mode js-night-mode" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
 
-    <img id="userPhoto" src="assets/imagens/profile.jpg" alt="Luke Harper's Profile Photo" class="profile-photo" loading="lazy" width="100" height="100">
+    <img id="userPhoto" src="assets/imagens/profile.jpg" alt="Luke Harper's Profile Photo" class="profile-photo" loading="lazy">
 
-    <h1 id="userName">Luke Harper</h1>
+    <span id="userName">Luke Harper</span>
     <div id="winner" class="winner-banner" role="alert" aria-live="polite">
         <h3>YOU'RE WINNER!</h3>
     </div>
 
-    <nav id="links" aria-label="Social links">
+    <div id="links">
         <div class="links-header">
             <button class="page-share" aria-label="Share this page" title="Share this page">
                 <i class="fas fa-share-alt"></i>
             </button>
-            <button class="view-toggle" aria-label="Toggle view layout" title="Toggle grid/list view" aria-pressed="false">
+            <button class="view-toggle" aria-label="Toggle view layout" title="Toggle grid/list view">
                 <i class="fas fa-grip-horizontal"></i>
             </button>
-            <button class="piano-mode-toggle" aria-label="Toggle piano mode" title="Toggle piano mode" aria-pressed="false">
+            <button class="piano-mode-toggle" aria-label="Toggle piano mode" title="Toggle piano mode">
                 <i class="fas fa-music"></i>
             </button>
-            <button class="sustain-toggle" aria-label="Hold for sustain" title="Hold for sustain" aria-pressed="false">
+            <button class="sustain-toggle" aria-label="Hold for sustain" title="Hold for sustain">
                 <i class="fas fa-infinity"></i>
             </button>
         </div>
-        <div class="link-item">
-            <a class="link" href="https://lukeharper.co.uk" target="_blank" rel="noopener noreferrer" aria-label="Visit CV/Skills website">
-                <div class="link-content">
-                    <i class="fas fa-globe" aria-hidden="true"></i>
-                    <span>CV/Skills</span>
-                </div>
-            </a>
+        <a class="link" href="https://lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Visit CV/Skills website">
+            <div class="link-content">
+                <i class="fas fa-globe" aria-hidden="true"></i>
+                <span>CV/Skills</span>
+            </div>
             <button class="share-btn" aria-label="Share CV/Skills link" title="Share link">
                 <i class="fas fa-share-alt"></i>
             </button>
-        </div>
+        </a>
         <div class="link-container">
-            <div class="link-item">
-                <a class="link" href="https://twitch.tv/Flukie" target="_blank" rel="noopener noreferrer" aria-label="Visit Twitch channel">
-                    <div class="link-content">
-                        <i class="fab fa-twitch" aria-hidden="true"></i>
-                        <span>Twitch</span>
-                    </div>
-                </a>
+            <a class="link" href="https://twitch.tv/Flukie" target="_blank" rel="noopener" aria-label="Visit Twitch channel">
+                <div class="link-content">
+                    <i class="fab fa-twitch" aria-hidden="true"></i>
+                    <span>Twitch</span>
+                </div>
                 <button class="share-btn" aria-label="Share Twitch link" title="Share link">
                     <i class="fas fa-share-alt"></i>
                 </button>
-            </div>
-            <div class="link-item">
-                <a class="link" href="https://kick.com/Flukie" target="_blank" rel="noopener noreferrer" aria-label="Visit Kick channel">
-                    <div class="link-content">
-                        <i class="fas fa-video" aria-hidden="true"></i>
-                        <span>Kick</span>
-                    </div>
-                </a>
+            </a>
+            <a class="link" href="https://kick.com/Flukie" target="_blank" rel="noopener" aria-label="Visit Kick channel">
+                <div class="link-content">
+                    <i class="fab fa-kick" aria-hidden="true"></i>
+                    <span>Kick</span>
+                </div>
                 <button class="share-btn" aria-label="Share Kick link" title="Share link">
                     <i class="fas fa-share-alt"></i>
                 </button>
-            </div>
+            </a>
         </div>
         <div class="link-container">
-            <div class="link-item">
-                <a class="link" href="https://vkvideo.ru/playlist/512257790_1" target="_blank" rel="noopener noreferrer" aria-label="Watch DJ videos">
-                    <div class="link-content">
-                        <i class="fab fa-vk" aria-hidden="true"></i>
-                        <span>DJ Video</span>
-                    </div>
-                </a>
+            <a class="link" href="https://vkvideo.ru/playlist/512257790_1" target="_blank" rel="noopener" aria-label="Watch DJ videos">
+                <div class="link-content">
+                    <i class="fab fa-vk" aria-hidden="true"></i>
+                    <span>DJ Video</span>
+                </div>
                 <button class="share-btn" aria-label="Share DJ Video link" title="Share link">
                     <i class="fas fa-share-alt"></i>
                 </button>
-            </div>
-            <div class="link-item">
-                <a class="link" href="https://www.mixcloud.com/FlukieL/" target="_blank" rel="noopener noreferrer" aria-label="Listen to DJ mixes">
-                    <div class="link-content">
-                        <i class="fab fa-mixcloud" aria-hidden="true"></i>
-                        <span>DJ Audio</span>
-                    </div>
-                </a>
+            </a>
+            <a class="link" href="https://www.mixcloud.com/FlukieL/" target="_blank" rel="noopener" aria-label="Listen to DJ mixes">
+                <div class="link-content">
+                    <i class="fab fa-mixcloud" aria-hidden="true"></i>
+                    <span>DJ Audio</span>
+                </div>
                 <button class="share-btn" aria-label="Share DJ Audio link" title="Share link">
                     <i class="fas fa-share-alt"></i>
                 </button>
-            </div>
-        </div>
-        <div class="link-item">
-            <a class="link" href="https://www.instagram.com/flukiel" target="_blank" rel="noopener noreferrer" aria-label="Visit Instagram profile">
-                <div class="link-content">
-                    <i class="fab fa-instagram" aria-hidden="true"></i>
-                    <span>Instagram</span>
-                </div>
             </a>
+        </div>
+        <a class="link" href="https://www.instagram.com/flukiel" target="_blank" rel="noopener" aria-label="Visit Instagram profile">
+            <div class="link-content">
+                <i class="fab fa-instagram" aria-hidden="true"></i>
+                <span>Instagram</span>
+            </div>
             <button class="share-btn" aria-label="Share Instagram link" title="Share link">
                 <i class="fas fa-share-alt"></i>
             </button>
-        </div>
-        <div class="link-item">
-            <a class="link" href="https://spotify.lukeharper.co.uk" target="_blank" rel="noopener noreferrer" aria-label="Visit Spotify profile">
-                <div class="link-content">
-                    <i class="fab fa-spotify" aria-hidden="true"></i>
-                    <span>Spotify</span>
-                </div>
-            </a>
+        </a>
+        <a class="link" href="https://spotify.lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Visit Spotify profile">
+            <div class="link-content">
+                <i class="fab fa-spotify" aria-hidden="true"></i>
+                <span>Spotify</span>
+            </div>
             <button class="share-btn" aria-label="Share Spotify link" title="Share link">
                 <i class="fas fa-share-alt"></i>
             </button>
-        </div>
-        <div class="link-item">
-            <a class="link" href="https://twitter.lukeharper.co.uk" target="_blank" rel="noopener noreferrer" aria-label="Visit Twitter/X profile">
-                <div class="link-content">
-                    <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
-                    <span>𝕏</span>
-                </div>
-            </a>
+        </a>
+        <a class="link" href="https://twitter.lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Visit Twitter/X profile">
+            <div class="link-content">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+                <span>𝕏</span>
+            </div>
             <button class="share-btn" aria-label="Share Twitter/X link" title="Share link">
                 <i class="fas fa-share-alt"></i>
             </button>
-        </div>
+        </a>
         <div class="link-container">
-            <div class="link-item">
-                <a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" rel="noopener noreferrer" aria-label="Watch YouTube videos">
-                    <div class="link-content">
-                        <i class="fab fa-youtube" aria-hidden="true"></i>
-                        <span>YouTube</span>
-                    </div>
-                </a>
+            <a class="link" href="https://www.youtube.com/flukielukie/videos" target="_blank" rel="noopener" aria-label="Watch YouTube videos">
+                <div class="link-content">
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                    <span>YouTube</span>
+                </div>
                 <button class="share-btn" aria-label="Share YouTube link" title="Share link">
                     <i class="fas fa-share-alt"></i>
                 </button>
-            </div>
-            <div class="link-item">
-                <a class="link" href="https://www.youtube.com/@flukie4876/streams" target="_blank" rel="noopener noreferrer" aria-label="Watch YouTube livestreams">
-                    <div class="link-content">
-                        <i class="fas fa-gamepad" aria-hidden="true"></i>
-                        <span>YouTube - Livestreams</span>
-                    </div>
-                </a>
+            </a>
+            <a class="link" href="https://www.youtube.com/@flukie4876/streams" target="_blank" rel="noopener" aria-label="Watch YouTube livestreams">
+                <div class="link-content">
+                    <i class="fas fa-gamepad" aria-hidden="true"></i>
+                    <span>YouTube - Livestreams</span>
+                </div>
                 <button class="share-btn" aria-label="Share YouTube Livestreams link" title="Share link">
                     <i class="fas fa-share-alt"></i>
                 </button>
-            </div>
-        </div>
-        <div class="link-item">
-            <a class="link" href="https://snake.lukeharper.co.uk" target="_blank" rel="noopener noreferrer" aria-label="Play Snake Game">
-                <div class="link-content">
-                    <i class="fas fa-gamepad" aria-hidden="true"></i>
-                    <span>Snake Game</span>
-                </div>
             </a>
+        </div>
+        <a class="link" href="https://snake.lukeharper.co.uk" target="_blank" rel="noopener" aria-label="Play Snake Game">
+            <div class="link-content">
+                <i class="fas fa-gamepad" aria-hidden="true"></i>
+                <span>Snake Game</span>
+            </div>
             <button class="share-btn" aria-label="Share Snake Game link" title="Share link">
                 <i class="fas fa-share-alt"></i>
             </button>
-        </div>
-        <div class="link-item">
-            <a class="link" href="https://www.tiktok.com/@flukiel" target="_blank" rel="noopener noreferrer" aria-label="Visit TikTok profile">
-                <div class="link-content">
-                    <i class="fab fa-tiktok" aria-hidden="true"></i>
-                    <span>TikTok</span>
-                </div>
-            </a>
+        </a>
+        <a class="link" href="https://www.tiktok.com/@flukiel" target="_blank" rel="noopener" aria-label="Visit TikTok profile">
+            <div class="link-content">
+                <i class="fab fa-tiktok" aria-hidden="true"></i>
+                <span>TikTok</span>
+            </div>
             <button class="share-btn" aria-label="Share TikTok link" title="Share link">
                 <i class="fas fa-share-alt"></i>
             </button>
-        </div>
-        <div class="link-item">
-            <a class="link" href="https://www.snapchat.com/add/flukiel" target="_blank" rel="noopener noreferrer" aria-label="Add on Snapchat">
-                <div class="link-content">
-                    <i class="fab fa-snapchat" aria-hidden="true"></i>
-                    <span>Snapchat</span>
-                </div>
-            </a>
+        </a>
+        <a class="link" href="https://www.snapchat.com/add/flukiel" target="_blank" rel="noopener" aria-label="Add on Snapchat">
+            <div class="link-content">
+                <i class="fab fa-snapchat" aria-hidden="true"></i>
+                <span>Snapchat</span>
+            </div>
             <button class="share-btn" aria-label="Share Snapchat link" title="Share link">
                 <i class="fas fa-share-alt"></i>
             </button>
-        </div>
-    </nav>
+        </a>
+    </div>
 
     <div class="footer">
-        <a href="https://soundcloud.com/flukie" target="_blank" rel="noopener noreferrer" class="footer-link">
+        <a href="https://soundcloud.com/flukie" target="_blank" rel="noopener" class="footer-link">
             <i class="fab fa-soundcloud circulo" aria-hidden="true"></i> <span class="sr-only">SoundCloud</span>
         </a>
-        <a href="https://www.facebook.com/flukiel" target="_blank" rel="noopener noreferrer" class="footer-link">
+        <a href="https://www.facebook.com/flukiel" target="_blank" rel="noopener" class="footer-link">
             <i class="fab fa-facebook-f circulo" aria-hidden="true"></i> <span class="sr-only">Facebook</span>
         </a>
-        <a href="https://linkedin.lukeharper.co.uk" target="_blank" rel="noopener noreferrer" class="footer-link">
+        <a href="https://linkedin.lukeharper.co.uk" target="_blank" rel="noopener" class="footer-link">
             <i class="fab fa-linkedin circulo" aria-hidden="true"></i> <span class="sr-only">LinkedIn</span>
         </a>
-        <a href="https://whatsapp.lukeharper.co.uk" target="_blank" rel="noopener noreferrer" class="footer-link">
+        <a href="https://whatsapp.lukeharper.co.uk" target="_blank" rel="noopener" class="footer-link">
             <i class="fab fa-whatsapp circulo" aria-hidden="true"></i> <span class="sr-only">WhatsApp</span>
         </a>
     </div>
 
     <div id="achievementsSection">
-        <button class="achievements-header js-achievements-toggle" aria-expanded="false" aria-controls="achievementsContent">
+        <div class="achievements-header js-achievements-toggle">
             <h2>Achievements</h2>
-            <i class="fas fa-chevron-down" aria-hidden="true"></i>
-        </button>
-        <div class="achievements-content" id="achievementsContent" hidden>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="achievements-content">
             <div class="achievements-grid">
                 <div class="achievement" id="faceOff">
                     <i class="fas fa-user-ninja"></i>
@@ -251,44 +211,9 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="assets/js/piano.js" defer></script>
-    <script src="assets/js/script.js" defer></script>
-    <script src="index.js" defer></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js');
-        });
-      }
-    </script>
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Luke Harper",
-      "url": "https://lukeharper.co.uk",
-      "image": "/assets/imagens/profile.jpg",
-      "sameAs": [
-        "https://twitch.tv/Flukie",
-        "https://kick.com/Flukie",
-        "https://vkvideo.ru/playlist/512257790_1",
-        "https://www.mixcloud.com/FlukieL/",
-        "https://www.instagram.com/flukiel",
-        "https://spotify.lukeharper.co.uk",
-        "https://twitter.lukeharper.co.uk",
-        "https://www.youtube.com/flukielukie/videos",
-        "https://www.youtube.com/@flukie4876/streams",
-        "https://snake.lukeharper.co.uk",
-        "https://www.tiktok.com/@flukiel",
-        "https://www.snapchat.com/add/flukiel",
-        "https://soundcloud.com/flukie",
-        "https://www.facebook.com/flukiel",
-        "https://linkedin.lukeharper.co.uk",
-        "https://whatsapp.lukeharper.co.uk"
-      ]
-    }
-    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src="assets/js/piano.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>
