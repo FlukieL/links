@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lh-links-v1';
+const CACHE_NAME = 'lh-links';
 const ASSETS = [
   '/',
   '/index.html',
@@ -27,13 +27,32 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
+  const dest = request.destination;
+
+  // Network-first for HTML, CSS and JS to avoid serving stale UI after deploy
+  if (dest === 'document' || dest === 'style' || dest === 'script') {
+    event.respondWith(
+      fetch(request)
+        .then(networkResponse => {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
+          return networkResponse;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // Cache-first with background update for other assets
   event.respondWith(
     caches.match(request).then(cached => {
-      const fetchPromise = fetch(request).then(networkResponse => {
-        const responseClone = networkResponse.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
-        return networkResponse;
-      }).catch(() => cached);
+      const fetchPromise = fetch(request)
+        .then(networkResponse => {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
+          return networkResponse;
+        })
+        .catch(() => cached);
 
       return cached || fetchPromise;
     })
