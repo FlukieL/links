@@ -1,12 +1,104 @@
+const PIANO_SCRIPT_URL = 'assets/js/piano.js';
+let pianoScriptPromise = null;
+
+function loadExternalScript(url) {
+    return new Promise((resolve, reject) => {
+        const existingScript = document.querySelector(`script[data-src="${url}"]`);
+        if (existingScript) {
+            if (existingScript.dataset.loaded === 'true') {
+                resolve();
+                return;
+            }
+            existingScript.addEventListener('load', resolve, { once: true });
+            existingScript.addEventListener('error', reject, { once: true });
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = true;
+        script.dataset.src = url;
+        script.addEventListener('load', () => {
+            script.dataset.loaded = 'true';
+            resolve();
+        }, { once: true });
+        script.addEventListener('error', reject, { once: true });
+        document.head.appendChild(script);
+    });
+}
+
+function ensurePianoReady() {
+    if (typeof window.playPianoNote === 'function') {
+        return Promise.resolve();
+    }
+    if (!pianoScriptPromise) {
+        pianoScriptPromise = loadExternalScript(PIANO_SCRIPT_URL).catch((error) => {
+            console.error('Failed to load piano script:', error);
+            pianoScriptPromise = null;
+            throw error;
+        });
+    }
+    return pianoScriptPromise;
+}
+
+function safePlayPianoNote(note, volume) {
+    if (typeof window.playPianoNote === 'function') {
+        return window.playPianoNote(note, volume);
+    }
+    return ensurePianoReady().then(() => {
+        if (typeof window.playPianoNote === 'function') {
+            return window.playPianoNote(note, volume);
+        }
+        return null;
+    }).catch(() => null);
+}
+
+function safeUpdateSustain(isEnabled) {
+    if (typeof window.updateSustain === 'function') {
+        window.updateSustain(isEnabled);
+        return;
+    }
+    ensurePianoReady().then(() => {
+        if (typeof window.updateSustain === 'function') {
+            window.updateSustain(isEnabled);
+        }
+    }).catch(() => {});
+}
+
+function scheduleIdle(task) {
+    if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(task, { timeout: 250 });
+    } else {
+        window.setTimeout(task, 0);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Add staggered animation to links
     const links = document.querySelectorAll('.link');
-    links.forEach((link, index) => {
-        link.style.animationDelay = `${index * 0.1}s`;
+    
+    requestAnimationFrame(() => {
+        links.forEach((link, index) => {
+            link.style.animationDelay = `${index * 0.1}s`;
+            link.classList.add('intro-animation');
+        });
+
+        const headerButtons = document.querySelectorAll('.links-header button');
+        headerButtons.forEach((button, index) => {
+            button.style.opacity = '0';
+            button.style.animation = `buttonEntrance 0.5s ease-out ${index * 150 + 300}ms forwards`;
+        });
     });
 
     const userName = document.getElementById('userName');
     let mouseOverTimeout;
+    const achievementsToggle = document.querySelector('.js-achievements-toggle');
+    if (achievementsToggle) {
+        achievementsToggle.addEventListener('click', () => toggleAchievements(achievementsToggle));
+    }
+    const resetAchievementsButton = document.querySelector('.js-reset-achievements');
+    if (resetAchievementsButton) {
+        resetAchievementsButton.addEventListener('click', window.resetAchievements);
+    }
     
     function checkAchievement(name) {
         let achievements = JSON.parse(localStorage.getItem('achievements') || '{}');
@@ -111,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         melody.forEach((note) => {
             if (note.note !== null) {  // Skip rests
                 setTimeout(() => {
-                    playPianoNote(note.note);
+                    safePlayPianoNote(note.note);
                 }, timeOffset * 1000);
             }
             timeOffset += note.duration;
@@ -172,6 +264,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Check system dark mode preference and set initial state
     const darkModeButton = document.querySelector('.js-night-mode');
+    if (darkModeButton) {
+        darkModeButton.addEventListener('click', (event) => {
+            mostrar(event.currentTarget);
+        });
+    }
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         mostrar(darkModeButton);
     }
@@ -185,7 +282,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const userPhoto = document.getElementById('userPhoto');
     let clickCount = 0;
-    const PIANO_MODE_CLICKS = 99999;
     const NORMAL_MODE_CLICKS = 10;
     
     // Single consolidated click handler for userPhoto
@@ -213,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show instrument name and play demo note
             showInstrumentIndicator();
-            playPianoNote('A4', 0.7);
+            safePlayPianoNote('A4', 0.7);
             
             // Update the visual indicator on the music icon
             updateInstrumentIndicator();
@@ -272,69 +368,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Share Functionality
-    document.querySelectorAll('.share-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const link = btn.closest('.link');
-            const url = link.href;
-            const title = link.querySelector('span').textContent;
+    scheduleIdle(() => {
+        document.querySelectorAll('.share-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const link = btn.closest('.link');
+                const url = link.href;
+                const title = link.querySelector('span').textContent;
 
-            try {
-                if (navigator.share) {
-                    await navigator.share({
-                        title: 'Check out this link!',
-                        text: `Check out ${title} on Luke Harper's links page`,
-                        url: url
-                    });
-                } else {
-                    await navigator.clipboard.writeText(url);
-                    showToast('Link copied to clipboard!');
+                try {
+                    if (navigator.share) {
+                        await navigator.share({
+                            title: 'Check out this link!',
+                            text: `Check out ${title} on Luke Harper's links page`,
+                            url: url
+                        });
+                    } else {
+                        await navigator.clipboard.writeText(url);
+                        showToast('Link copied to clipboard!');
+                    }
+                } catch (err) {
+                    console.error('Error sharing:', err);
                 }
-            } catch (err) {
-                console.error('Error sharing:', err);
-            }
+            });
         });
-    });
 
-    // Page Share Button
-    document.querySelector('.page-share').addEventListener('click', async () => {
-        const shareData = {
-            title: 'Luke Harper - Links',
-            text: 'Check out Luke Harper\'s social links!',
-            url: window.location.href
-        };
+        const pageShareButton = document.querySelector('.page-share');
+        if (pageShareButton) {
+            pageShareButton.addEventListener('click', async () => {
+                const shareData = {
+                    title: 'Luke Harper - Links',
+                    text: 'Check out Luke Harper\'s social links!',
+                    url: window.location.href
+                };
 
-        try {
-            if (navigator.share) {
-                await navigator.share(shareData);
-            } else {
-                // Fallback for browsers that don't support Web Share API
-                await navigator.clipboard.writeText(window.location.href);
-                showToast('Link copied to clipboard!');
-            }
-        } catch (err) {
-            console.error('Error sharing:', err);
+                try {
+                    if (navigator.share) {
+                        await navigator.share(shareData);
+                    } else {
+                        // Fallback for browsers that don't support Web Share API
+                        await navigator.clipboard.writeText(window.location.href);
+                        showToast('Link copied to clipboard!');
+                    }
+                } catch (err) {
+                    console.error('Error sharing:', err);
+                }
+            });
         }
     });
-
-    // Toast notification function
-    function showToast(message) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        
-        // Trigger reflow to enable transition
-        toast.offsetHeight;
-        toast.classList.add('show');
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
 
     // Piano Mode Constants and Setup
     const NOTES = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5'];
@@ -343,7 +426,42 @@ document.addEventListener('DOMContentLoaded', function() {
         'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00,
         'A#4': 466.16, 'B4': 493.88, 'C5': 523.25
     };
-    
+    const NOTE_PATTERN = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5'];
+
+    let pianoHandlersBound = false;
+
+    function assignNotesToLinks() {
+        links.forEach((link, index) => {
+            const note = NOTE_PATTERN[index % NOTE_PATTERN.length];
+            link.setAttribute('data-note', note);
+        });
+    }
+
+    function handlePianoLinkClick(event) {
+        if (!document.body.classList.contains('piano-mode')) {
+            return;
+        }
+        event.preventDefault();
+        const link = event.currentTarget;
+        const note = link.getAttribute('data-note');
+        if (note) {
+            safePlayPianoNote(note);
+        }
+        setTimeout(() => {
+            window.location.href = link.href;
+        }, 200);
+    }
+
+    function bindPianoLinkHandlers() {
+        if (pianoHandlersBound) {
+            return;
+        }
+        links.forEach((link) => {
+            link.addEventListener('click', handlePianoLinkClick);
+        });
+        pianoHandlersBound = true;
+    }
+
     // Keyboard mapping for number keys to notes
     const KEY_TO_NOTE = {
         '1': 'C4',
@@ -400,9 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Call the piano.js function to handle sustain changes
-        if (typeof updateSustain === 'function') {
-            updateSustain(isEnabled);
-        }
+        safeUpdateSustain(isEnabled);
     }
 
     // Get the existing sustain toggle button
@@ -526,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 // Play the piano note
-                return playPianoNote(closestNote[0]);
+                return safePlayPianoNote(closestNote[0]);
             }
             
             // Original oscillator code for non-piano mode
@@ -591,6 +707,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            ensurePianoReady();
+            assignNotesToLinks();
+            bindPianoLinkHandlers();
+            
             // Reset to first instrument when entering piano mode
             currentInstrument = 0;
             window.currentInstrument = 0; // Update global variable
@@ -600,28 +720,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update instrument indicator to hide sustain for piano
             updateInstrumentIndicator();
-            
-            // Assign notes to links if entering piano mode - include sharp notes for black keys
-            const links = document.querySelectorAll('.link');
-            const notePattern = ['C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5'];
-            
-            links.forEach((link, index) => {
-                const note = notePattern[index % notePattern.length];
-                link.setAttribute('data-note', note);
-                
-                // Add click handler for piano sounds
-                link.addEventListener('click', (e) => {
-                    if (document.body.classList.contains('piano-mode')) {
-                        e.preventDefault();
-                        playPianoNote(note);
-                        
-                        // Add a small delay before following the link
-                        setTimeout(() => {
-                            window.location.href = link.href;
-                        }, 200);
-                    }
-                });
-            });
 
             // Piano mode activation melody: C-E-G-C
             const activationMelody = [
@@ -635,7 +733,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let timeOffset = 0;
             activationMelody.forEach((note) => {
                 setTimeout(() => {
-                    playPianoNote(note.note);
+                    safePlayPianoNote(note.note);
                 }, timeOffset);
                 timeOffset += note.duration * 1000; // Convert duration to milliseconds
             });
@@ -661,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Use the note assigned to the link
         const note = link.getAttribute('data-note');
         if (note) {
-            playPianoNote(note, 0.5);
+            safePlayPianoNote(note, 0.5);
             
             // Visual feedback
             link.style.transform = 'scale(1.05)';
@@ -682,7 +780,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Use the note assigned to the link
                 const note = link.getAttribute('data-note');
                 if (note) {
-                    playPianoNote(note, 0.5);
+                    safePlayPianoNote(note, 0.5);
                     
                     // Visual feedback
                     link.style.transform = 'scale(1.05)';
@@ -747,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (noteName) {
             // Play the note
-            playPianoNote(noteName);
+            safePlayPianoNote(noteName);
             
             // Highlight the corresponding link if it exists
             const links = document.querySelectorAll('.link');
@@ -764,6 +862,14 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast(`Playing note: ${noteName}`);
         }
     });
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(err => {
+                console.warn('ServiceWorker registration failed:', err);
+            });
+        }, { once: true });
+    }
 });
 
 window.resetAchievements = function() {
@@ -775,6 +881,14 @@ window.resetAchievements = function() {
         document.getElementById('winner').style.display = 'none';
         document.querySelector('.reset-achievements').style.display = 'none';
     }
+}
+
+function toggleAchievements(header) {
+    if (!header) return;
+    const content = header.nextElementSibling;
+    if (!content) return;
+    header.classList.toggle('expanded');
+    content.classList.toggle('expanded');
 }
 
 // Function to show toast notification
