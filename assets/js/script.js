@@ -74,6 +74,10 @@ function scheduleIdle(task) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Ensure body is visible immediately
+    document.body.style.visibility = 'visible';
+    document.body.style.opacity = '1';
+    
     const links = document.querySelectorAll('.link');
     
     requestAnimationFrame(() => {
@@ -268,9 +272,15 @@ document.addEventListener('DOMContentLoaded', function() {
         darkModeButton.addEventListener('click', (event) => {
             mostrar(event.currentTarget);
         });
-    }
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mostrar(darkModeButton);
+        
+        // Safely apply dark mode if system preference matches
+        try {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                mostrar(darkModeButton);
+            }
+        } catch (error) {
+            console.warn('Error checking dark mode preference:', error);
+        }
     }
 
     // Add listener for system dark mode changes
@@ -863,12 +873,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Register service worker after page is fully loaded to avoid blocking render
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+        // Use requestIdleCallback or setTimeout to ensure it doesn't block initial render
+        const registerSW = () => {
             navigator.serviceWorker.register('/sw.js').catch(err => {
                 console.warn('ServiceWorker registration failed:', err);
             });
-        }, { once: true });
+        };
+        
+        if (window.requestIdleCallback) {
+            window.requestIdleCallback(registerSW, { timeout: 2000 });
+        } else {
+            setTimeout(registerSW, 1000);
+        }
     }
 });
 

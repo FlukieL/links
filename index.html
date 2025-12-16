@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Luke Harper - Links</title>
     <meta name="description" content="Luke Harper's Social Links"/>
+    <style>
+        /* Critical CSS to prevent white screen */
+        body { 
+            display: block !important; 
+            visibility: visible !important;
+            opacity: 1 !important;
+            background-color: rgb(243, 242, 242);
+            margin: 0;
+            padding: 20px;
+        }
+        body * {
+            visibility: visible;
+        }
+    </style>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="assets/imagens/icon-192x192.png">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -210,5 +224,11 @@
 
     <!-- JavaScript -->
     <script src="assets/js/script.js" defer></script>
+    <noscript>
+        <style>
+            body { display: block !important; }
+            .js-night-mode { display: none; }
+        </style>
+    </noscript>
 </body>
 </html>

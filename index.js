@@ -48,15 +48,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update achievement visuals
     updateAchievements();
 
-    // Register service worker
+    // Register service worker after a delay to avoid blocking initial render
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
+        setTimeout(() => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker registration successful');
+                })
+                .catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+        }, 1000);
     }
 
     // Add sequential intro animations
