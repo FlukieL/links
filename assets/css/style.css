@@ -1,5 +1,10 @@
 /* Style Settings */
-@import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+@font-face {
+    font-family: 'F7';
+    src: url('../../fonts/F7.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
 :root {
     /* Colors */
@@ -18,8 +23,16 @@
     --color-winner: gold;
 
     /* Fonts */
-    --font-primary: 'Karla', sans-serif;
-    --font-system: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-primary: 'F7', 'Karla', sans-serif;
+    --font-system: 'F7', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+    /* FFVII Menu Style */
+    --color-ffvii-blue-top: #0000ad;
+    --color-ffvii-blue-bottom: #000044;
+    --ffvii-gradient: linear-gradient(180deg, var(--color-ffvii-blue-top) 0%, var(--color-ffvii-blue-bottom) 100%);
+    --ffvii-border: 2px solid #fff;
+    --ffvii-shadow: 4px 4px 0px rgba(0, 0, 0, 0.4);
+    --radius-ffvii: 6px;
 
     /* Sizes */
     --space-xs: 5px;
@@ -43,7 +56,12 @@
     --shadow-hover: 2px 2px 2px rgba(50, 50, 50, 0.77);
 }
 
-/* Base Styles */
+/* Ensure icons use correct font family */
+i[class^="fa-"], i[class*=" fa-"], .fas, .fab, .far {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif !important;
+}
+
+/* Base styles */
 body {
     background-color: var(--color-background);
     transition: background-color var(--transition-fast);
@@ -73,7 +91,7 @@ body {
 
 #userName {
     color: var(--color-text);
-    font-size: 1rem;
+    font-size: 1.15rem;
     font-weight: 600;
     line-height: 1.25;
     display: block;
@@ -96,7 +114,7 @@ body {
     color: var(--color-white);
     padding: 4px 8px;
     border-radius: var(--radius-sm);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease;
     pointer-events: none;
@@ -159,18 +177,19 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-primary);
+    background: var(--ffvii-gradient);
     color: var(--color-white);
     font-family: var(--font-primary);
     text-align: center;
     margin-bottom: var(--space-lg);
     padding: 0 var(--space-xl);
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1.15rem;
     font-weight: bold;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-ffvii);
     transition: all var(--transition-fast);
-    border: 2px solid var(--color-primary);
+    border: var(--ffvii-border);
+    box-shadow: var(--ffvii-shadow);
     height: 56px;
     box-sizing: border-box;
     line-height: 1;
@@ -179,8 +198,9 @@ body {
 }
 
 .link:hover {
-    background-color: var(--color-white);
-    color: var(--color-primary);
+    filter: brightness(1.2);
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4);
 }
 
 .link-container .link {
@@ -203,7 +223,7 @@ body {
     width: 24px;
     text-align: center;
     margin-right: var(--space-md);
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -247,7 +267,7 @@ body {
 /* Footer */
 .footer {
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1.45rem;
     margin-top: auto;
     padding: var(--space-xl) 0;
     width: 100%;
@@ -261,7 +281,7 @@ body {
 }
 
 .footer i {
-    font-size: 1.2em;
+    font-size: 1.35em;
     line-height: 38px;
 }
 
@@ -271,7 +291,7 @@ body {
     width: 38px;
     height: 38px;
     text-align: center;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--color-icon-text);
     transition: all var(--transition-fast);
 }
@@ -287,17 +307,27 @@ body {
     position: fixed;
     top: var(--space-lg);
     right: var(--space-xl);
-    background: none;
-    border: none;
+    background: var(--ffvii-gradient);
+    border: var(--ffvii-border);
+    border-radius: var(--radius-ffvii);
+    box-shadow: var(--ffvii-shadow);
     z-index: 10000000;
-    color: var(--color-text);
+    color: var(--color-white);
     cursor: pointer;
-    transition: color var(--transition-fast);
+    transition: all var(--transition-fast);
     padding: var(--space-xs);
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
 }
 
 .night_mode:hover {
-    color: var(--color-primary);
+    filter: brightness(1.2);
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4);
 }
 
 /* Achievements Section */
@@ -324,7 +354,7 @@ body {
     margin: 0;
     color: var(--color-text);
     font-weight: 500;
-    font-size: 1.2em;
+    font-size: 1.35em;
 }
 
 .achievements-header i {
@@ -372,7 +402,7 @@ body {
 
 .achievement span {
     margin-top: var(--space-xs);
-    font-size: 0.9em;
+    font-size: 1.05em;
 }
 
 .achievement.unlocked {
@@ -388,21 +418,19 @@ body {
 /* Achievement Popup */
 #achievementPopup {
     position: fixed;
-    top: var(--space-lg);
+    bottom: 30px;
     left: 50%;
-    transform: translateX(-50%) translateY(-100%);
-    background: var(--color-primary-transparent);
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ffvii-gradient);
     color: var(--color-white);
-    padding: var(--space-lg) var(--space-xl);
-    border-radius: var(--radius-sm);
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-ffvii);
+    border: var(--ffvii-border);
+    box-shadow: var(--ffvii-shadow);
     transition: all var(--transition-fancy);
     z-index: 1000;
     pointer-events: none;
     opacity: 0;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--color-primary-light);
-    box-shadow: var(--shadow-popup);
     font-family: var(--font-system);
     font-weight: 500;
     display: flex;
@@ -417,7 +445,7 @@ body {
 }
 
 #achievementPopup i {
-    font-size: 24px;
+    font-size: 28px;
     color: var(--color-achievement);
     animation: achievementIcon 1s ease infinite;
 }
@@ -430,7 +458,7 @@ body {
 
 #achievementText::before {
     content: "Achievement Unlocked!";
-    font-size: 0.8em;
+    font-size: 0.95em;
     color: var(--color-achievement);
     margin-bottom: var(--space-xs);
 }
@@ -438,7 +466,7 @@ body {
 /* Winner Styles */
 #winner {
     color: var(--color-winner);
-    font-size: 24px;
+    font-size: 28px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     text-align: center;
     width: 100%;
@@ -455,17 +483,20 @@ body {
     display: none;
     margin-top: var(--space-md);
     padding: 8px 16px;
-    background: var(--color-danger);
-    border: 1px solid var(--color-danger-border);
-    color: var(--color-danger-text);
-    border-radius: var(--radius-sm);
+    background: var(--ffvii-gradient);
+    border: var(--ffvii-border);
+    border-radius: var(--radius-ffvii);
+    box-shadow: var(--ffvii-shadow);
+    color: var(--color-white);
     cursor: pointer;
-    font-family: var(--font-system);
+    font-family: var(--font-primary);
     transition: all var(--transition-fast);
 }
 
 .reset-achievements:hover {
-    background: var(--color-danger-border);
+    filter: brightness(1.2);
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4);
 }
 
 /* Animations */
@@ -512,11 +543,56 @@ body.dark-mode {
     --color-icon-circle: rgb(45, 45, 45);
     --color-icon-text: rgb(200, 200, 200);
     --color-danger-text: #ff6666;
+    
+    /* Dark FFVII Menu Style */
+    --color-ffvii-blue-top: #000066;
+    --color-ffvii-blue-bottom: #000022;
+    --ffvii-gradient: linear-gradient(180deg, var(--color-ffvii-blue-top) 0%, var(--color-ffvii-blue-bottom) 100%);
+
+    background-color: #1a1a1a;
 }
 
-body.dark-mode #achievementPopup {
-    background: rgba(0, 140, 255, 0.35);
-    box-shadow: 0 4px 15px rgba(0, 140, 255, 0.3);
+body.dark-mode .link {
+    background: var(--ffvii-gradient);
+    border: var(--ffvii-border);
+    color: var(--color-white);
+}
+
+body.dark-mode .view-toggle, 
+body.dark-mode .page-share, 
+body.dark-mode .piano-mode-toggle,
+body.dark-mode .night_mode,
+body.dark-mode .sustain-toggle,
+body.dark-mode .reset-achievements,
+body.dark-mode #achievementPopup,
+body.dark-mode .toast {
+    background: var(--ffvii-gradient);
+}
+
+body.dark-mode .link:hover {
+    filter: brightness(1.2);
+    color: var(--color-white);
+}
+
+body.dark-mode .link:hover .share-btn {
+    color: var(--color-white);
+    opacity: 0.7;
+}
+
+body.dark-mode .link:hover .share-btn:hover {
+    opacity: 1;
+}
+
+body.dark-mode .link:hover i,
+body.dark-mode .link:hover span {
+    color: var(--color-white);
+}
+
+/* Container width constraints */
+#links, #userName, #achievementsSection {
+    width: 100%;
+    max-width: 675px;
+    padding: 0;
 }
 
 /* Links Header */
@@ -533,48 +609,32 @@ body.dark-mode #achievementPopup {
 }
 
 .view-toggle, .page-share, .piano-mode-toggle {
-    background: none;
-    border: none;
-    color: var(--color-text);
+    background: var(--ffvii-gradient);
+    border: var(--ffvii-border);
+    border-radius: var(--radius-ffvii);
+    box-shadow: var(--ffvii-shadow);
+    color: var(--color-white);
     padding: var(--space-sm);
     cursor: pointer;
-    transition: color var(--transition-fast);
+    transition: all var(--transition-fast);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
 }
 
 .view-toggle:hover, .page-share:hover, .piano-mode-toggle:hover {
-    background: var(--color-primary-light);
-    color: var(--color-primary);
+    filter: brightness(1.2);
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4);
+    color: var(--color-white);
 }
 
 /* Piano mode toggle with instrument indicator */
 .piano-mode-toggle {
-    background: none;
-    border: none;
-    color: var(--color-text);
-    padding: var(--space-sm);
-    cursor: pointer;
-    transition: color var(--transition-fast);
     position: relative;
-}
-
-.piano-mode-toggle:hover {
-    color: var(--color-text);
-    opacity: 0.7;
-}
-
-body.piano-mode .piano-mode-toggle {
-    color: var(--color-primary);
-    opacity: 1;
-}
-
-body.piano-mode .piano-mode-toggle:hover {
-    color: var(--color-primary);
-    opacity: 0.8;
 }
 
 /* Instrument indicator on the music icon */
@@ -595,6 +655,11 @@ body.piano-mode .piano-mode-toggle:hover {
     justify-content: center;
     color: white;
     font-weight: bold;
+}
+
+body.piano-mode .piano-mode-toggle {
+    filter: brightness(1.5);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
 }
 
 body.piano-mode .piano-mode-toggle::after {
@@ -628,18 +693,18 @@ body.piano-mode .piano-mode-toggle.instrument-3::after {
     position: absolute;
     right: 10px;
     top: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background: var(--ffvii-gradient);
     color: white;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: var(--radius-ffvii);
+    border: var(--ffvii-border);
+    box-shadow: var(--ffvii-shadow);
+    font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.15s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -670,19 +735,19 @@ body:not(.piano-mode) .links-header .sustain-toggle {
 }
 
 .links-header .sustain-toggle.active {
-    background-color: var(--color-primary);
-    box-shadow: 0 0 10px rgba(0, 140, 255, 0.4);
+    filter: brightness(1.5);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
     transform: scale(1.05);
 }
 
 .links-header .sustain-toggle:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+    filter: brightness(1.2);
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4);
 }
 
 .links-header .sustain-toggle:active {
     transform: scale(0.95);
-    background-color: var(--color-primary);
-    box-shadow: 0 0 15px rgba(0, 140, 255, 0.6);
 }
 
 /* Add pulsating animation for active sustain */
@@ -701,16 +766,17 @@ body:not(.piano-mode) .links-header .sustain-toggle {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: var(--color-primary);
+    background: var(--ffvii-gradient);
     color: white;
-    padding: 8px 16px;
-    border-radius: 5px;
-    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: var(--radius-ffvii);
+    border: var(--ffvii-border);
+    box-shadow: var(--ffvii-shadow);
+    font-size: 16px;
     z-index: 1001;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     font-family: var(--font-primary);
     font-weight: 500;
 }
@@ -752,7 +818,7 @@ body.piano-mode .link::before {
     color: var(--color-white);
     padding: 2px 8px;
     border-radius: 10px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     opacity: 0;
     transition: opacity 0.2s ease, transform 0.2s ease;
     pointer-events: none;
@@ -836,43 +902,6 @@ body.piano-mode .link-container {
     width: 675px;
 }
 
-/* Dark Mode Improvements */
-body.dark-mode {
-    background-color: #1a1a1a;
-}
-
-body.dark-mode .link {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-white);
-}
-
-body.dark-mode .link:hover {
-    background-color: var(--color-white);
-    color: var(--color-primary);
-}
-
-body.dark-mode .link:hover .share-btn {
-    color: var(--color-primary);
-    opacity: 0.7;
-}
-
-body.dark-mode .link:hover .share-btn:hover {
-    opacity: 1;
-}
-
-body.dark-mode .link:hover i,
-body.dark-mode .link:hover span {
-    color: var(--color-primary);
-}
-
-/* Container width constraints */
-#links, #userName, #achievementsSection {
-    width: 100%;
-    max-width: 675px;
-    padding: 0;
-}
-
 /* Media Queries for Responsive Design */
 @media screen and (max-width: 768px) {
     body {
@@ -925,13 +954,13 @@ body.dark-mode .link:hover span {
 @media screen and (max-width: 480px) {
     .link {
         padding: 0 var(--space-lg);
-        font-size: 0.9rem;
+        font-size: 1.05rem;
         height: 48px;
     }
 
     .link i {
         margin-right: var(--space-sm);
-        font-size: 1rem;
+        font-size: 1.15rem;
     }
 
     .footer {
