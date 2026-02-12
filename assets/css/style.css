@@ -373,6 +373,7 @@ body {
 
 .achievements-content.expanded {
     max-height: 500px;
+    overflow: visible;
 }
 
 .achievements-grid {
@@ -381,11 +382,12 @@ body {
     gap: var(--space-sm);
     margin: var(--space-lg) 0;
     width: 100%;
+    padding-top: 50px;
 }
 
 .achievement {
     padding: var(--space-md);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-ffvii);
     background: var(--color-primary-transparent);
     display: flex;
     flex-direction: column;
@@ -398,6 +400,33 @@ body {
     border: 1px solid var(--color-primary-light);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    cursor: help;
+    position: relative;
+}
+
+.achievement::after {
+    content: attr(data-hint);
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ffvii-gradient);
+    color: var(--color-white);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-ffvii);
+    white-space: nowrap;
+    font-size: 0.85em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast);
+    border: var(--ffvii-border);
+    z-index: 1001;
+}
+
+.achievement:hover::after,
+.achievement:focus::after,
+.achievement.show-hint::after {
+    opacity: 1;
 }
 
 .achievement span {
@@ -407,8 +436,10 @@ body {
 
 .achievement.unlocked {
     opacity: 1;
-    background: var(--color-primary-light);
-    box-shadow: var(--shadow-popup);
+    background: var(--ffvii-gradient);
+    box-shadow: var(--ffvii-shadow);
+    color: var(--color-white);
+    border: var(--ffvii-border);
 }
 
 .achievement i {

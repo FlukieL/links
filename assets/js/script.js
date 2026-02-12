@@ -131,6 +131,27 @@ document.addEventListener('DOMContentLoaded', function() {
     if (resetAchievementsButton) {
         resetAchievementsButton.addEventListener('click', window.resetAchievements);
     }
+
+    // Add confirm sound to footer links
+    const footerLinks = document.querySelectorAll('.footer-link');
+    footerLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+            playUISound(sounds.confirm);
+        });
+    });
+
+    // Add touch hint handling for achievements on mobile
+    const achievementElements = document.querySelectorAll('.achievement');
+    achievementElements.forEach((achievement) => {
+        achievement.addEventListener('touchstart', () => {
+            achievement.classList.add('show-hint');
+        });
+        achievement.addEventListener('touchend', () => {
+            setTimeout(() => {
+                achievement.classList.remove('show-hint');
+            }, 2000);
+        });
+    });
     
     function checkAchievement(name) {
         let achievements = JSON.parse(localStorage.getItem('achievements') || '{}');
@@ -301,13 +322,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     const isArmed = armedLinks.get(link);
 
                     if (isArmed) {
-                        // Second tap: play confirm and navigate
+                        // Second tap: play confirm and navigate in new tab
+                        ev.preventDefault();
+                        ev.stopPropagation();
                         playUISound(sounds.confirm);
                         armedLinks.set(link, false);
-                        // manually navigate to the link's href
+                        // open in new tab like target="_blank"
                         const href = link.getAttribute('href');
                         if (href) {
-                            window.location.href = href;
+                            window.open(href, '_blank');
                         }
                         return;
                     }
