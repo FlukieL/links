@@ -144,6 +144,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative; /* required for nav-finger absolute positioning */
 }
 
 .link-container {
@@ -183,7 +184,7 @@ body {
     margin-bottom: var(--space-lg);
     padding: 0 var(--space-xl);
     text-decoration: none;
-    font-size: 1.15rem;
+    font-size: 1.4rem;
     font-weight: normal;
     border-radius: var(--radius-ffvii);
     transition: all var(--transition-fast);
@@ -466,6 +467,26 @@ body {
 #winner {
     color: var(--color-winner);
     font-size: 28px;
+
+/* Floating navigation finger (overlay) */
+#nav-finger {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 9999;
+    transition: top 150ms ease, left 150ms ease, opacity 150ms ease;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#nav-finger img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     text-align: center;
     width: 100%;
@@ -543,9 +564,9 @@ body.dark-mode {
     --color-icon-text: rgb(200, 200, 200);
     --color-danger-text: #ff6666;
     
-    /* Dark FFVII Menu Style */
-    --color-ffvii-blue-top: #000066;
-    --color-ffvii-blue-bottom: #000022;
+    /* Dark FFVII Menu Style: match the light-mode FF7 colors exactly */
+    --color-ffvii-blue-top: #0000ad;
+    --color-ffvii-blue-bottom: #000044;
     --ffvii-gradient: linear-gradient(180deg, var(--color-ffvii-blue-top) 0%, var(--color-ffvii-blue-bottom) 100%);
 
     background-color: #1a1a1a;
@@ -566,6 +587,13 @@ body.dark-mode .reset-achievements,
 body.dark-mode #achievementPopup,
 body.dark-mode .toast {
     background: var(--ffvii-gradient);
+}
+
+/* Keep link appearance identical to light mode in dark mode */
+body.dark-mode .link {
+    background: var(--ffvii-gradient);
+    border: var(--ffvii-border);
+    color: var(--color-white);
 }
 
 body.dark-mode .link:hover {

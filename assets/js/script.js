@@ -79,7 +79,26 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.style.opacity = '1';
     
     const links = document.querySelectorAll('.link');
-    
+    // Preload and prepare UI sounds (place WAV files at assets/sounds/)
+    const sounds = {
+        nav: new Audio('assets/sounds/f7navigation.wav'),
+        achieve: new Audio('assets/sounds/f7achieve.wav'),
+        confirm: new Audio('assets/sounds/f7confirm.wav'),
+        snip: new Audio('assets/sounds/f7snip.wav')
+    };
+    // sensible default volumes
+    Object.values(sounds).forEach(s => { if (s) { s.preload = 'auto'; s.volume = 0.7; }});
+
+    // Helper to play UI sounds unless piano mode is active
+    function playUISound(sound) {
+        try {
+            if (!sound) return;
+            if (document.body.classList.contains('piano-mode')) return;
+            sound.currentTime = 0;
+            sound.play();
+        } catch (e) {}
+    }
+
     requestAnimationFrame(() => {
         links.forEach((link, index) => {
             link.style.animationDelay = `${index * 0.1}s`;
@@ -90,6 +109,15 @@ document.addEventListener('DOMContentLoaded', function() {
         headerButtons.forEach((button, index) => {
             button.style.opacity = '0';
             button.style.animation = `buttonEntrance 0.5s ease-out ${index * 150 + 300}ms forwards`;
+        });
+
+        // Attach sound handlers to header buttons (snip)
+        headerButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                // don't play snip for the piano-mode toggle or night-mode button
+                if (button.classList.contains('piano-mode-toggle') || button.classList.contains('js-night-mode')) return;
+                playUISound(sounds.snip);
+            });
         });
     });
 
@@ -136,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         popup.insertBefore(icon, popup.firstChild);
         
         popup.classList.add('show');
+        playUISound(sounds.achieve);
         
         // Remove the popup after animation
         setTimeout(() => {
@@ -184,6 +213,109 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Play navigation/confirm sounds for links
+    // Setup finger pointer and link sounds
+    (function setupFinger() {
+        const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+        let lastNavTime = 0;
+        const navThrottle = 120;
+
+        // Create fixed-size finger pointer (44px)
+        const finger = document.createElement('div');
+        finger.id = 'nav-finger';
+        finger.style.position = 'fixed';
+        finger.style.width = '44px';
+        finger.style.height = '44px';
+        finger.style.opacity = '0';
+        finger.style.zIndex = '9999';
+        finger.style.transition = 'top 100ms ease, left 100ms ease, opacity 100ms ease';
+        finger.style.pointerEvents = 'none';
+
+        const img = document.createElement('img');
+        img.src = 'assets/images/F7Finger.png';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        finger.appendChild(img);
+        document.body.appendChild(finger);
+
+        function showFingerAt(linkEl) {
+            try {
+                const rect = linkEl.getBoundingClientRect();
+                // Position overlay on the left side of the link, centered vertically
+                const top = rect.top + (rect.height / 2) - 22; // 22 = half of 44px
+                const left = rect.left + 4; // 4px inside the link from left edge
+
+                finger.style.top = `${Math.max(0, top)}px`;
+                finger.style.left = `${Math.max(-44, left)}px`;
+                finger.style.opacity = '1';
+            } catch (e) {}
+        }
+
+        function hideFinger() {
+            finger.style.opacity = '0';
+        }
+
+        // Track armed state for two-tap on touch devices
+        const armedLinks = new WeakMap();
+
+        links.forEach((link) => {
+            armedLinks.set(link, false);
+
+            // Desktop: hover shows finger and plays nav sound
+            link.addEventListener('mouseenter', () => {
+                const now = Date.now();
+                if (now - lastNavTime > navThrottle) {
+                    playUISound(sounds.nav);
+                    lastNavTime = now;
+                }
+                showFingerAt(link);
+            });
+
+            link.addEventListener('mouseleave', () => {
+                hideFinger();
+            });
+
+            // Desktop click: play confirm
+            if (!isTouchDevice) {
+                link.addEventListener('click', () => {
+                    playUISound(sounds.confirm);
+                });
+            }
+
+            // Touch: two-tap behavior using touchend event
+            if (isTouchDevice) {
+                link.addEventListener('touchend', (ev) => {
+                    const isArmed = armedLinks.get(link);
+
+                    if (isArmed) {
+                        // Second tap: play confirm and navigate
+                        playUISound(sounds.confirm);
+                        armedLinks.set(link, false);
+                        // manually navigate to the link's href
+                        const href = link.getAttribute('href');
+                        if (href) {
+                            window.location.href = href;
+                        }
+                        return;
+                    }
+
+                    // First tap: prevent navigation, show finger, play nav sound
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    playUISound(sounds.nav);
+                    showFingerAt(link);
+                    armedLinks.set(link, true);
+
+                    // Clear armed state after timeout
+                    setTimeout(() => {
+                        armedLinks.set(link, false);
+                    }, 1500);
+                });
+            }
+        });
+    })();
+
     // Night mode melody function
     function playNightModeMelody() {
         if (!document.body.classList.contains('piano-mode')) return;
@@ -231,14 +363,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let links = document.querySelectorAll('.link');
             for (let i = 0; i < links.length; i++) {
-                links[i].style.filter = 'grayscale(100%)';
+                // Clear inline filter so CSS `body.dark-mode` rules take effect
+                links[i].style.filter = '';
             }
 
             let circulos = document.querySelectorAll('.circulo');
             for (let i = 0; i < circulos.length; i++) {
-                circulos[i].style.filter = 'grayscale(100%)';
+                circulos[i].style.filter = '';
             }
 
+            // play confirm click sound
+            playUISound(sounds.confirm);
         } else {
             e.classList.remove("fa-sun");
             e.classList.add("fa-moon");
@@ -249,13 +384,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let links = document.querySelectorAll('.link');
             for (let i = 0; i < links.length; i++) {
-                links[i].style.filter = 'grayscale(0%)';
+                // Ensure any inline filter is cleared when leaving dark mode
+                links[i].style.filter = '';
             }
 
             let circulos = document.querySelectorAll('.circulo');
             for (let i = 0; i < circulos.length; i++) {
-                circulos[i].style.filter = 'grayscale(0%)';
+                circulos[i].style.filter = '';
             }
+            // play confirm click sound
+            playUISound(sounds.confirm);
         }
 
         currentGreyscale = Math.min(currentGreyscale + 5, 100);
