@@ -239,6 +239,9 @@ document.addEventListener('DOMContentLoaded', function() {
         finger.appendChild(img);
         document.body.appendChild(finger);
 
+        // Track which link the finger is currently positioned on
+        let activeLinkForFinger = null;
+
         function showFingerAt(linkEl) {
             try {
                 const rect = linkEl.getBoundingClientRect();
@@ -249,12 +252,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 finger.style.top = `${Math.max(0, top)}px`;
                 finger.style.left = `${Math.max(-44, left)}px`;
                 finger.style.opacity = '1';
+                activeLinkForFinger = linkEl;
             } catch (e) {}
         }
 
         function hideFinger() {
             finger.style.opacity = '0';
+            activeLinkForFinger = null;
         }
+
+        // Update finger position on scroll to keep it locked to the active link
+        window.addEventListener('scroll', () => {
+            if (activeLinkForFinger) {
+                showFingerAt(activeLinkForFinger);
+            }
+        });
 
         // Track armed state for two-tap on touch devices
         const armedLinks = new WeakMap();
