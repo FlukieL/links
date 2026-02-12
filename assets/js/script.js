@@ -309,43 +309,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 hideFinger();
             });
 
-            // Desktop click: play confirm
-            if (!isTouchDevice) {
-                link.addEventListener('click', () => {
-                    playUISound(sounds.confirm);
-                });
-            }
+            // Click: play confirm
+            link.addEventListener('click', () => {
+                playUISound(sounds.confirm);
+            });
 
-            // Touch: two-tap behavior using touchend event
+            // Touch: show finger and play nav sound
             if (isTouchDevice) {
-                link.addEventListener('touchend', (ev) => {
-                    const isArmed = armedLinks.get(link);
-
-                    if (isArmed) {
-                        // Second tap: play confirm and navigate in new tab
-                        ev.preventDefault();
-                        ev.stopPropagation();
-                        playUISound(sounds.confirm);
-                        armedLinks.set(link, false);
-                        // open in new tab like target="_blank"
-                        const href = link.getAttribute('href');
-                        if (href) {
-                            window.open(href, '_blank');
-                        }
-                        return;
+                link.addEventListener('touchstart', () => {
+                    const now = Date.now();
+                    if (now - lastNavTime > navThrottle) {
+                        playUISound(sounds.nav);
+                        lastNavTime = now;
                     }
-
-                    // First tap: prevent navigation, show finger, play nav sound
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    playUISound(sounds.nav);
                     showFingerAt(link);
-                    armedLinks.set(link, true);
-
-                    // Clear armed state after timeout
-                    setTimeout(() => {
-                        armedLinks.set(link, false);
-                    }, 1500);
                 });
             }
         });
