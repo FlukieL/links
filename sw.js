@@ -1,11 +1,15 @@
-const CACHE_NAME = 'luke-links-v1';
+const CACHE_NAME = 'luke-links-v2';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/manifest.json',
   '/assets/css/style.css',
   '/assets/js/script.js',
+  '/assets/js/piano.js',
   '/assets/imagens/profile.jpg',
   '/assets/imagens/favicon.ico',
+  '/assets/imagens/icon-192x192.png',
+  '/assets/imagens/icon-512x512.png',
   '/fa6.6/css/all.css'
 ];
 
@@ -57,7 +61,7 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Activate event to clean up old caches
+// Activate event: clean up old caches, then claim clients
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -68,8 +72,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  // Take control of all pages immediately
-  return self.clients.claim();
 }); 

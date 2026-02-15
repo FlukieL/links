@@ -1,25 +1,27 @@
 {
-    "name": "Luke Harper Links",
-    // "short_name": "Luke Links",
-    // Short name disabled to prevent install prompt
-    "description": "Luke Harper's Social Links",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#426EFF",
-    "orientation": "portrait-primary",
-    "icons": [
-        {
-            "src": "assets/imagens/icon-192x192.png",
-            "type": "image/png",
-            "sizes": "192x192",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "assets/imagens/icon-512x512.png",
-            "type": "image/png",
-            "sizes": "512x512",
-            "purpose": "any maskable"
-        }
-    ]
-} 
+  "name": "Luke Harper Links",
+  "short_name": "Luke Links",
+  "description": "Luke Harper's Social Links",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#426EFF",
+  "orientation": "portrait-primary",
+  "lang": "en-GB",
+  "categories": ["social", "lifestyle"],
+  "icons": [
+    {
+      "src": "assets/imagens/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/imagens/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
