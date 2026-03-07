@@ -282,12 +282,14 @@ document.addEventListener('DOMContentLoaded', function() {
             activeLinkForFinger = null;
         }
 
-        // Update finger position on scroll to keep it locked to the active link
-        window.addEventListener('scroll', () => {
-            if (activeLinkForFinger) {
-                showFingerAt(activeLinkForFinger);
-            }
-        });
+        // Desktop keeps finger aligned while scrolling; touch keeps last tapped position.
+        if (!isTouchDevice) {
+            window.addEventListener('scroll', () => {
+                if (activeLinkForFinger) {
+                    showFingerAt(activeLinkForFinger);
+                }
+            });
+        }
 
         // Track armed state for two-tap on touch devices
         const armedLinks = new WeakMap();

@@ -62,6 +62,12 @@ i[class^="fa-"], i[class*=" fa-"], .fas, .fab, .far {
 }
 
 /* Base styles */
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     background-color: var(--color-background);
     transition: background-color var(--transition-fast);
