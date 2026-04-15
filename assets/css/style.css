@@ -1072,3 +1072,107 @@ body.piano-mode .link-container {
 .wobble-animation {
     animation: wobble 0.4s ease-in-out;
 }
+
+/* FF7 text reveal animation */
+@keyframes ff7TextReveal {
+    from {
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+    }
+    to {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+.ff7-text-reveal {
+    animation: ff7TextReveal 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+/* Instrument notification (like FF7 item obtained message) */
+.instrument-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: var(--ffvii-gradient);
+    color: var(--color-white);
+    padding: var(--space-xl) var(--space-xl) var(--space-xl) var(--space-xl);
+    border-radius: var(--radius-ffvii);
+    border: var(--ffvii-border);
+    box-shadow: var(--ffvii-shadow), 0 0 40px rgba(0, 0, 173, 0.5);
+    z-index: 10001;
+    font-family: var(--font-primary);
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    min-width: 250px;
+}
+
+.instrument-notification::before {
+    content: '♪';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: var(--space-sm);
+    animation: musicNote 0.8s ease infinite;
+}
+
+.instrument-notification.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+@keyframes musicNote {
+    0%, 100% { transform: translateY(0) rotate(-10deg); }
+    50% { transform: translateY(-10px) rotate(10deg); }
+}
+
+/* PSX-style scanlines effect (subtle) */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.03) 0px,
+        rgba(0, 0, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+}
+
+body.dark-mode::after {
+    opacity: 0.5;
+}
+
+/* Enhanced piano mode with PSX aesthetic */
+body.piano-mode .link {
+    position: relative;
+    overflow: visible;
+}
+
+/* Add glow effect to active piano keys */
+body.piano-mode .link:active::before,
+body.piano-mode .link.touched::before {
+    box-shadow: 0 0 10px var(--color-primary),
+                0 0 20px var(--color-primary),
+                0 0 30px var(--color-primary);
+}
+
+/* Cursor pointer visualization (FF7 hand/finger style) */
+.ff7-cursor {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffffff" stroke="%23000000" stroke-width="1" d="M10 2L8 8H2l6 5-2 7 8-5 8 5-2-7 6-5h-6z"/></svg>'), pointer;
+}
+
+body.piano-mode .link {
+    cursor: url('assets/images/F7Finger.png'), pointer;
+}

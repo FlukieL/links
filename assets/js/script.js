@@ -282,17 +282,54 @@ document.addEventListener('DOMContentLoaded', function() {
             activeLinkForFinger = null;
         }
 
-        // Desktop keeps finger aligned while scrolling; touch keeps last tapped position.
-        if (!isTouchDevice) {
-            window.addEventListener('scroll', () => {
-                if (activeLinkForFinger) {
-                    showFingerAt(activeLinkForFinger);
-                }
-            });
-        }
+        // Keep finger aligned while scrolling on both desktop and mobile
+        window.addEventListener('scroll', () => {
+            if (activeLinkForFinger) {
+                showFingerAt(activeLinkForFinger);
+            }
+        }, { passive: true });
 
         // Track armed state for two-tap on touch devices
         const armedLinks = new WeakMap();
+
+        // Add global touch tracking for dragging across links
+        if (isTouchDevice) {
+            let isDragging = false;
+            
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                const link = element?.closest('.link');
+                
+                if (link && link !== activeLinkForFinger) {
+                    const now = Date.now();
+                    if (now - lastNavTime > navThrottle) {
+                        playUISound(sounds.nav);
+                        lastNavTime = now;
+                    }
+                    showFingerAt(link);
+                }
+            }, { passive: true });
+            
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+                // Keep finger visible at last position
+            }, { passive: true });
+
+            links.forEach((link) => {
+                link.addEventListener('touchstart', (e) => {
+                    isDragging = true;
+                    const now = Date.now();
+                    if (now - lastNavTime > navThrottle) {
+                        playUISound(sounds.nav);
+                        lastNavTime = now;
+                    }
+                    showFingerAt(link);
+                });
+            });
+        }
 
         links.forEach((link) => {
             armedLinks.set(link, false);
@@ -315,18 +352,6 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', () => {
                 playUISound(sounds.confirm);
             });
-
-            // Touch: show finger and play nav sound
-            if (isTouchDevice) {
-                link.addEventListener('touchstart', () => {
-                    const now = Date.now();
-                    if (now - lastNavTime > navThrottle) {
-                        playUISound(sounds.nav);
-                        lastNavTime = now;
-                    }
-                    showFingerAt(link);
-                });
-            }
         });
     })();
 
