@@ -100,10 +100,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     requestAnimationFrame(() => {
-        links.forEach((link, index) => {
-            link.style.animationDelay = `${index * 0.1}s`;
-            link.classList.add('intro-animation');
-        });
+        // Note: link entrance appearance is now handled entirely by the
+        // category reveal system (.category-content .link / .reveal class
+        // + CSS transitions) rather than a CSS `animation`. CSS `animation`
+        // properties automatically restart whenever an element toggles from
+        // display:none to visible (as happens when a category is expanded
+        // in grid/list view), which caused the button entrance animations
+        // to visually "replay" every time a category was expanded.
 
         const headerButtons = document.querySelectorAll('.links-header button');
         headerButtons.forEach((button, index) => {
@@ -127,6 +130,74 @@ document.addEventListener('DOMContentLoaded', function() {
     if (achievementsToggle) {
         achievementsToggle.addEventListener('click', () => toggleAchievements(achievementsToggle));
     }
+
+    // Category expand/collapse toggles (Socials expanded by default via HTML classes)
+    // Uses computed pixel max-height (required for smooth CSS transitions) and
+    // staggers the reveal of each link inside, similar to an FF7 menu opening.
+    function setCategoryMaxHeight(content, expanding) {
+        if (expanding) {
+            // Temporarily allow full height to measure natural content height
+            content.style.maxHeight = 'none';
+            const fullHeight = content.scrollHeight;
+            content.style.maxHeight = '0px';
+            // Force reflow, then animate to full height
+            requestAnimationFrame(() => {
+                content.style.maxHeight = fullHeight + 'px';
+            });
+            // After the transition completes, release the fixed height so
+            // dynamic content (e.g. grid/list toggle) still works.
+            const clearFixedHeight = () => {
+                content.style.maxHeight = 'none';
+                content.removeEventListener('transitionend', clearFixedHeight);
+            };
+            content.addEventListener('transitionend', clearFixedHeight);
+        } else {
+            // Set explicit height first so the collapse transition has a starting point
+            content.style.maxHeight = content.scrollHeight + 'px';
+            requestAnimationFrame(() => {
+                content.style.maxHeight = '0px';
+            });
+        }
+    }
+
+    function staggerCategoryLinks(content) {
+        const categoryLinks = content.querySelectorAll('.link');
+        categoryLinks.forEach((link) => {
+            link.classList.remove('reveal');
+        });
+        // Re-trigger reflow before staggering reveal classes
+        requestAnimationFrame(() => {
+            categoryLinks.forEach((link, index) => {
+                setTimeout(() => {
+                    link.classList.add('reveal');
+                }, index * 60);
+            });
+        });
+    }
+
+    const categoryToggles = document.querySelectorAll('.js-category-toggle');
+    categoryToggles.forEach((toggle) => {
+        const content = toggle.nextElementSibling;
+        // Initialize state for the category that starts expanded (Socials)
+        if (content && content.classList.contains('expanded')) {
+            content.style.maxHeight = 'none';
+            staggerCategoryLinks(content);
+        }
+
+        toggle.addEventListener('click', () => {
+            if (!content) return;
+            const isExpanded = toggle.classList.toggle('expanded');
+            content.classList.toggle('expanded', isExpanded);
+            toggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+            setCategoryMaxHeight(content, isExpanded);
+            if (isExpanded) {
+                staggerCategoryLinks(content);
+            } else {
+                content.querySelectorAll('.link').forEach((link) => link.classList.remove('reveal'));
+            }
+            playUISound(sounds.snip);
+        });
+    });
     const resetAchievementsButton = document.querySelector('.js-reset-achievements');
     if (resetAchievementsButton) {
         resetAchievementsButton.addEventListener('click', window.resetAchievements);
