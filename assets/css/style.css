@@ -316,6 +316,15 @@ body {
     box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4);
 }
 
+/* Mobile two-tap selection state: the first tap on a link "arms" it
+   (highlighting it like a cursor selection) without navigating; a second
+   tap on the same armed link then follows through to the destination. */
+.link.armed {
+    filter: brightness(1.3);
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4), 0 0 0 3px var(--color-primary);
+}
+
 .link-container .link {
     width: calc(50% - var(--space-sm) / 2);
     margin-bottom: 0;

@@ -360,8 +360,28 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, { passive: true });
 
-        // Track armed state for two-tap on touch devices
-        const armedLinks = new WeakMap();
+        // Track two-tap "arm" state for touch devices: the first tap on a
+        // link just selects/highlights it (like moving a cursor onto it),
+        // and only a second tap on the same link actually navigates. This
+        // prevents accidental navigation from a stray tap on mobile.
+        let armedLink = null;
+
+        function disarmLink() {
+            if (armedLink) {
+                armedLink.classList.remove('armed');
+                armedLink = null;
+            }
+        }
+
+        // Tapping anywhere outside a link (or starting a drag) should
+        // disarm the currently selected link.
+        if (isTouchDevice) {
+            document.addEventListener('touchstart', (e) => {
+                if (!e.target.closest('.link')) {
+                    disarmLink();
+                }
+            }, { passive: true });
+        }
 
         // Add global touch tracking for dragging across links
         if (isTouchDevice) {
@@ -403,8 +423,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         links.forEach((link) => {
-            armedLinks.set(link, false);
-
             // Desktop: hover shows finger and plays nav sound
             link.addEventListener('mouseenter', () => {
                 const now = Date.now();
@@ -419,8 +437,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 hideFinger();
             });
 
-            // Click: play confirm
-            link.addEventListener('click', () => {
+            // Click: on touch devices (outside piano mode), require a
+            // second tap to actually navigate. The first tap just arms
+            // (selects/highlights) the link, mimicking a cursor move.
+            link.addEventListener('click', (e) => {
+                if (isTouchDevice && !document.body.classList.contains('piano-mode')) {
+                    if (armedLink !== link) {
+                        e.preventDefault();
+                        disarmLink();
+                        link.classList.add('armed');
+                        armedLink = link;
+                        showFingerAt(link);
+                        playUISound(sounds.nav);
+                        return;
+                    }
+                    disarmLink();
+                }
                 playUISound(sounds.confirm);
             });
         });

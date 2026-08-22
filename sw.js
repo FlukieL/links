@@ -1,4 +1,4 @@
-const CACHE_NAME = 'luke-links-v3';
+const CACHE_NAME = 'luke-links-v4';
 const urlsToCache = [
   '/',
   '/index.html',
