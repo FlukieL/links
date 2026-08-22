@@ -153,6 +153,110 @@ body {
     position: relative; /* required for nav-finger absolute positioning */
 }
 
+/* Category Sections (FF7 menu style) */
+.category-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--space-xl);
+}
+
+.category-title {
+    width: 100%;
+    max-width: 675px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--ffvii-gradient);
+    color: var(--color-white);
+    font-family: var(--font-primary);
+    font-size: 1.3rem;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-ffvii);
+    border: var(--ffvii-border);
+    box-shadow: var(--ffvii-shadow);
+    margin-bottom: var(--space-lg);
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: left;
+    line-height: 1.2;
+}
+
+.category-title:hover {
+    filter: brightness(1.2);
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.4);
+}
+
+.category-title span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.category-title::before {
+    content: '▶';
+    color: var(--color-white);
+    font-size: 0.9rem;
+    margin-right: 2px;
+    display: inline-block;
+    transition: transform var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.category-title.expanded::before {
+    transform: rotate(90deg);
+}
+
+.category-title i {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.category-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform-origin: top center;
+    transform: scaleY(0.85);
+    transition: max-height 0.45s cubic-bezier(0.34, 1.15, 0.64, 1),
+                opacity 0.3s ease,
+                transform 0.4s cubic-bezier(0.34, 1.15, 0.64, 1);
+}
+
+.category-content.expanded {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+/* Staggered FF7-style item reveal when a category expands */
+.category-content .link {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.category-content.expanded .link.reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.category-section:last-child {
+    margin-bottom: 0;
+}
+
 .link-container {
     display: flex;
     justify-content: center;
@@ -162,7 +266,7 @@ body {
 }
 
 /* Single link (not in container) */
-#links > .link {
+.category-content > .link {
     width: 100%;
     max-width: 675px;
 }
@@ -199,8 +303,11 @@ body {
     height: 56px;
     box-sizing: border-box;
     line-height: 1;
-    opacity: 0;
-    animation: linkEntrance 0.5s ease forwards;
+    /* Entrance appearance is handled by the category reveal system
+       (.category-content .link / .reveal) instead of a CSS `animation`,
+       since `animation` properties restart whenever an ancestor toggles
+       display:none -> visible (e.g. expanding/collapsing a category),
+       which was causing the entrance animation to replay unexpectedly. */
 }
 
 .link:hover {
@@ -849,16 +956,12 @@ body:not(.piano-mode) .links-header .sustain-toggle {
     opacity: 1;
 }
 
-/* Piano mode styles */
+/* Piano mode styles: keep the same FF7 gradient look as normal links
+   (instead of swapping to a plain white background) so entering piano
+   mode doesn't feel like a jarring, mismatched "different app" moment. */
 body.piano-mode .link {
-    background-color: var(--color-white);
-    color: var(--color-primary);
-    border: 1px solid var(--color-text);
-    border-radius: 0 0 5px 5px;
-    margin-bottom: var(--space-lg);
     position: relative;
-    transition: all 0.15s ease-out;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, filter 0.15s ease-out;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
@@ -868,8 +971,8 @@ body.piano-mode .link {
 body.piano-mode .link:active,
 body.piano-mode .link.touched {
     transform: translateY(4px) scale(0.98);
+    filter: brightness(1.3);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-    background-color: var(--color-primary-light);
 }
 
 body.piano-mode .link::before {
@@ -895,45 +998,38 @@ body.piano-mode .link.touched::before {
     transform: translateX(-50%) translateY(-5px);
 }
 
-/* Black keys styling */
+/* "Black key" notes get a distinguishing look via a darkening filter
+   (rather than swapping to a flat background-color, which would clash
+   with the FF7 gradient used on every other link) and keep normal
+   sizing/position so they don't overlap neighbouring rows now that links
+   are grouped into FF7-style categories. */
 body.piano-mode .link[data-note*="#"] {
-    background-color: var(--color-text);
-    color: var(--color-white);
-    height: 45px;
-    margin-top: -22.5px;
+    filter: brightness(0.6);
     z-index: 2;
-    width: 60%;
 }
 
-body.piano-mode .link[data-note*="#"]:hover,
-body.piano-mode .link[data-note*="#"]:active,
-body.piano-mode .link[data-note*="#"].touched {
-    background-color: var(--color-icon-text);
+body.piano-mode .link[data-note*="#"]:hover {
+    filter: brightness(0.75);
 }
 
-/* White keys hover state */
+/* White ("natural") key hover state — subtle brighten, matching the
+   existing FF7 hover treatment used elsewhere on the site. */
 body.piano-mode .link:not([data-note*="#"]):hover {
-    background-color: #f0f0f0;
+    filter: brightness(1.15);
 }
 
 /* Container adjustments for piano layout */
 body.piano-mode #links {
     position: relative;
-    padding-top: 30px;
     touch-action: none;
 }
 
-body.piano-mode .link-container {
-    position: relative;
-    margin-bottom: 0;
-}
-
-/* Adjust spacing for mobile */
-@media screen and (max-width: 768px) {
-    body.piano-mode .link[data-note*="#"] {
-        width: 70%;
-    }
-}
+/* Piano mode now reuses the exact same flex-based category/link-container
+   layout as normal mode (single links stack full-width, paired links sit
+   side-by-side in a link-container) — no special overlapping/negative-margin
+   "piano key" positioning, since that assumed a single continuous column of
+   keys which no longer holds true once links are grouped into FF7-style
+   categories with headers and gaps breaking up the flow. */
 
 /* Grid View */
 .links-grid {
@@ -950,6 +1046,27 @@ body.piano-mode .link-container {
 .links-grid .link {
     width: 100%;
     margin-bottom: 0;
+}
+
+/* Ensure category sections don't break grid/list layouts */
+.links-grid .category-section {
+    display: contents;
+}
+
+/* Collapsed categories must not appear in the grid at all */
+.links-grid .category-content {
+    display: none;
+}
+
+/* Expanded categories flow their children into the grid/list */
+.links-grid .category-content.expanded {
+    display: contents;
+}
+
+.links-grid .category-title {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
 }
 
 /* List View */
