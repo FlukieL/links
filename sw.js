@@ -1,4 +1,4 @@
-const CACHE_NAME = 'luke-links-v2';
+const CACHE_NAME = 'luke-links-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -74,4 +74,4 @@ self.addEventListener('activate', event => {
       );
     }).then(() => self.clients.claim())
   );
-}); 
+});
