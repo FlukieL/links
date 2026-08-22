@@ -956,16 +956,12 @@ body:not(.piano-mode) .links-header .sustain-toggle {
     opacity: 1;
 }
 
-/* Piano mode styles */
+/* Piano mode styles: keep the same FF7 gradient look as normal links
+   (instead of swapping to a plain white background) so entering piano
+   mode doesn't feel like a jarring, mismatched "different app" moment. */
 body.piano-mode .link {
-    background-color: var(--color-white);
-    color: var(--color-primary);
-    border: 1px solid var(--color-text);
-    border-radius: 0 0 5px 5px;
-    margin-bottom: var(--space-lg);
     position: relative;
-    transition: all 0.15s ease-out;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, filter 0.15s ease-out;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
@@ -975,8 +971,8 @@ body.piano-mode .link {
 body.piano-mode .link:active,
 body.piano-mode .link.touched {
     transform: translateY(4px) scale(0.98);
+    filter: brightness(1.3);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-    background-color: var(--color-primary-light);
 }
 
 body.piano-mode .link::before {
@@ -1002,45 +998,38 @@ body.piano-mode .link.touched::before {
     transform: translateX(-50%) translateY(-5px);
 }
 
-/* Black keys styling */
+/* "Black key" notes get a distinguishing look via a darkening filter
+   (rather than swapping to a flat background-color, which would clash
+   with the FF7 gradient used on every other link) and keep normal
+   sizing/position so they don't overlap neighbouring rows now that links
+   are grouped into FF7-style categories. */
 body.piano-mode .link[data-note*="#"] {
-    background-color: var(--color-text);
-    color: var(--color-white);
-    height: 45px;
-    margin-top: -22.5px;
+    filter: brightness(0.6);
     z-index: 2;
-    width: 60%;
 }
 
-body.piano-mode .link[data-note*="#"]:hover,
-body.piano-mode .link[data-note*="#"]:active,
-body.piano-mode .link[data-note*="#"].touched {
-    background-color: var(--color-icon-text);
+body.piano-mode .link[data-note*="#"]:hover {
+    filter: brightness(0.75);
 }
 
-/* White keys hover state */
+/* White ("natural") key hover state — subtle brighten, matching the
+   existing FF7 hover treatment used elsewhere on the site. */
 body.piano-mode .link:not([data-note*="#"]):hover {
-    background-color: #f0f0f0;
+    filter: brightness(1.15);
 }
 
 /* Container adjustments for piano layout */
 body.piano-mode #links {
     position: relative;
-    padding-top: 30px;
     touch-action: none;
 }
 
-body.piano-mode .link-container {
-    position: relative;
-    margin-bottom: 0;
-}
-
-/* Adjust spacing for mobile */
-@media screen and (max-width: 768px) {
-    body.piano-mode .link[data-note*="#"] {
-        width: 70%;
-    }
-}
+/* Piano mode now reuses the exact same flex-based category/link-container
+   layout as normal mode (single links stack full-width, paired links sit
+   side-by-side in a link-container) — no special overlapping/negative-margin
+   "piano key" positioning, since that assumed a single continuous column of
+   keys which no longer holds true once links are grouped into FF7-style
+   categories with headers and gaps breaking up the flow. */
 
 /* Grid View */
 .links-grid {
