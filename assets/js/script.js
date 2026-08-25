@@ -1157,8 +1157,47 @@ document.addEventListener('DOMContentLoaded', function() {
     if ('serviceWorker' in navigator) {
         // Use requestIdleCallback or setTimeout to ensure it doesn't block initial render
         const registerSW = () => {
-            navigator.serviceWorker.register('/sw.js').catch(err => {
-                console.warn('ServiceWorker registration failed:', err);
+            // updateViaCache: 'none' stops the browser's HTTP cache from
+            // serving a stale copy of sw.js itself, which is one of the
+            // most common reasons a service worker appears to "never
+            // update" even after deploying new code.
+            navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+                .then(registration => {
+                    // Proactively ask the browser to check for a new
+                    // version of sw.js on every page load.
+                    registration.update().catch(() => {});
+
+                    // Also re-check periodically for long-lived tabs.
+                    setInterval(() => {
+                        registration.update().catch(() => {});
+                    }, 60 * 60 * 1000); // every hour
+
+                    // When a new service worker has been installed and is
+                    // waiting, activate it immediately rather than leaving
+                    // the user on stale cached assets until they manually
+                    // close every tab.
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        if (!newWorker) return;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && registration.waiting) {
+                                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                            }
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.warn('ServiceWorker registration failed:', err);
+                });
+
+            // Reload the page once the new service worker takes control so
+            // the user is guaranteed to see the latest assets, instead of
+            // running stale JS/CSS alongside a freshly updated cache.
+            let hasReloaded = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (hasReloaded) return;
+                hasReloaded = true;
+                window.location.reload();
             });
         };
         
